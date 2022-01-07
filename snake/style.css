@@ -1,6 +1,11 @@
 body{
-    text-align: center;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
+
 canvas {
     border: 20px solid black;
     border-radius: 20px;
