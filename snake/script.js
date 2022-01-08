@@ -14,19 +14,16 @@ const height = (canvas.height = 600);
 const radius = 25;
 
 // Player
+let playerScore = 0;
+
+// Snake
 const initialPositionX = width / 2 - radius;
 const initialPositionY = height / 2 + radius;
-let playerPositionX = initialPositionX;
-let playerPositionY = initialPositionY;
-let playerColor = 'black';
-let playerScore = 0;
-let lastPositionPlayer = { x: playerPositionX, y: playerPositionY };
+let snakePositionX = initialPositionX;
+let snakePositionY = initialPositionY;
+let snakeColorHead = 'black';
+let lastPositionSnake = { x: snakePositionX, y: snakePositionY };
 let tail = [];
-
-// Food
-let foodPositionX = randomPosition();
-let foodPositionY = randomPosition();
-let foodColor = randomColor();
 
 // Motion variables
 let velocityX = 1;
@@ -34,28 +31,59 @@ let velocityY = 0;
 let snakeSpeed = 2 * radius;
 const fps = 10;
 
-// Initial positions
+// Food
+let foodPositionX = randomPosition();
+let foodPositionY = randomPosition();
+let foodColor = randomColor();
+
+
+// Draw initial positons
 drawGrid(radius, width, height);
-drawPlayerPosition(playerPositionX, playerPositionY);
+drawSnakePosition(snakePositionX, snakePositionY);
 makeFood(foodPositionX, foodPositionY, foodColor);
 
 // Game loop function (main function)
 function gameLoop() {
   drawGrid(radius, width, height);
-  changeLastPosition();
+  recordLastPosition();
   snakeMotion();
-  drawPlayerPosition(playerPositionX, playerPositionY);
+  drawSnakePosition(snakePositionX, snakePositionY);
   eatFood();
   makeFood(foodPositionX, foodPositionY, foodColor);
-  addLastPositionToTail(lastPositionPlayer)
+  addLastPositionToTail(lastPositionSnake);
   drawTail();
-  checkOutPosition();
+  // checkOutPosition();
   setTimeout(gameLoop, 1000 / fps);
 }
 
+// ---UNCOMENT TO LAUNCH THE GAME----
 // gameLoop()
 
-// PlayerMove function
+// PLAYBOARD
+
+// Draw grid
+function drawGrid(radius, width, height) {
+  drawBackground(width, height);
+  for (let i = radius; i <= width; i += 2 * radius) {
+    for (let j = radius; j <= height; j += 2 * radius) {
+      ctx.beginPath();
+      ctx.arc(i, j, radius, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+}
+
+// Draw background
+function drawBackground(width, height) {
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, width, height);
+}
+
+
+// SNAKE
+
+// Control the snake by player's input
 function playerMove(event) {
   if (event.key === 'ArrowUp' || event.key === 'w') {
     if (velocityY !== 1) {
@@ -83,40 +111,22 @@ function playerMove(event) {
   }
 }
 
-// Change last position of player
-function changeLastPosition() {
-  lastPositionPlayer.x = playerPositionX;
-  lastPositionPlayer.y = playerPositionY;
+// Record the last position of the snake
+function recordLastPosition() {
+  lastPositionSnake.x = snakePositionX;
+  lastPositionSnake.y = snakePositionY;
 }
 
 // Snake motion
 function snakeMotion() {
-  playerPositionX += snakeSpeed * velocityX;
-  playerPositionY += snakeSpeed * velocityY;
+  snakePositionX += snakeSpeed * velocityX;
+  snakePositionY += snakeSpeed * velocityY;
+  checkOutPosition();
 }
 
-// Draw grid
-function drawGrid(radius, width, height) {
-  drawBackground(width, height);
-  for (let i = radius; i <= width; i += 2 * radius) {
-    for (let j = radius; j <= height; j += 2 * radius) {
-      ctx.beginPath();
-      ctx.arc(i, j, radius, 0, 2 * Math.PI);
-      ctx.closePath();
-      ctx.stroke();
-    }
-  }
-}
-
-// Draw background
-function drawBackground(width, height) {
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, width, height);
-}
-
-// Player position
-function drawPlayerPosition(x, y) {
-  ctx.fillStyle = playerColor;
+// Draw the current position of snake
+function drawSnakePosition(x, y) {
+  ctx.fillStyle = snakeColorHead;
   ctx.beginPath();
   ctx.arc(x, y, radius, 0, 2 * Math.PI);
   ctx.closePath();
@@ -125,21 +135,21 @@ function drawPlayerPosition(x, y) {
 
 // Check if the snake is out the playboard
 function checkOutPosition() {
-  if (playerPositionY > height) {
-    playerPositionY = radius;
+  if (snakePositionY > height) {
+    snakePositionY = radius;
   }
-  if (playerPositionY < 0) {
-    playerPositionY = height - radius;
+  if (snakePositionY < 0) {
+    snakePositionY = height - radius;
   }
-  if (playerPositionX > width) {
-    playerPositionX = radius;
+  if (snakePositionX > width) {
+    snakePositionX = radius;
   }
-  if (playerPositionX < 0) {
-    playerPositionX = width - radius;
+  if (snakePositionX < 0) {
+    snakePositionX = width - radius;
   }
 }
 
-// Food
+// FOOD
 
 // Give random position of food
 function randomPosition() {
@@ -156,9 +166,9 @@ function makeFood(x, y, color) {
   ctx.fill();
 }
 
-// Check if the food is eatened, if so then make a new food
+// Check if the food is eaten, if so then make a new food
 function eatFood() {
-  if (playerPositionX === foodPositionX && playerPositionY === foodPositionY) {
+  if (snakePositionX === foodPositionX && snakePositionY === foodPositionY) {
     addToTail(foodPositionX, foodPositionY, foodColor); // Add a eaten food to the tail
     foodPositionX = randomPosition(); // Give a new x position
     foodPositionY = randomPosition(); // Give a new y position
@@ -168,6 +178,30 @@ function eatFood() {
   }
 }
 
+// TAIL
+
+// Add the last eaten food to the tail 
+function addToTail(positionX, positionY, color) {
+  const pieceOfTail = {
+    x: positionX,
+    y: positionY,
+    color: color,
+  };
+  tail.push(pieceOfTail);
+}
+
+// Draw tail
+function drawTail() {
+  tail.forEach(function (ele) {
+    ctx.fillStyle = 'grey';
+    ctx.beginPath();
+    ctx.arc(ele.x, ele.y, radius, 0, 2 * Math.PI);
+    ctx.closePath();
+    ctx.fill();
+  });
+}
+
+// Reorganize coordinates of tail base on the last position of the snake's head
 function addLastPositionToTail(lastPosition) {
   if (tail.length === 1) {
     tail[0].x = lastPosition.x;
@@ -190,6 +224,8 @@ function addLastPositionToTail(lastPosition) {
   }
 }
 
+// RANDOM VALUES
+
 // Give a random number
 function randomNumber() {
   return Math.floor(Math.random() * 256);
@@ -198,25 +234,4 @@ function randomNumber() {
 // Give a random color
 function randomColor() {
   return `rgb(${randomNumber()}, ${randomNumber()}, ${randomNumber()})`;
-}
-
-// Tail
-function addToTail(positionX, positionY, color) {
-  const pieceOfTail = {
-    x: positionX,
-    y: positionY,
-    color: color,
-  };
-  tail.push(pieceOfTail);
-}
-
-// Draw tail
-function drawTail() {
-  tail.forEach(function (ele) {
-    ctx.fillStyle = 'grey';
-    ctx.beginPath();
-    ctx.arc(ele.x, ele.y, radius, 0, 2 * Math.PI);
-    ctx.closePath();
-    ctx.fill();
-  });
 }
