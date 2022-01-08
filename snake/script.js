@@ -137,6 +137,11 @@ function drawSnakePosition(x, y) {
   ctx.arc(x, y, radius, 0, 2 * Math.PI);
   ctx.closePath();
   ctx.fill();
+
+  // font awsome
+  ctx.fillStyle = 'white';
+  ctx.font = '50px FontAwesome';
+  ctx.fillText('\uf118', x - 21.5, y + 17.5);
 }
 
 // Check if the snake is out the playboard
