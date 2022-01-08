@@ -4,6 +4,10 @@ document.addEventListener('keydown', playerMove);
 // Score
 let score = document.querySelector('.score');
 
+// Game Over
+let gameOver = document.querySelector('.game-over');
+let isGameRunning = true;
+
 // Canvas and context
 const canvas = document.querySelector('.myCanvas');
 const ctx = canvas.getContext('2d');
@@ -44,16 +48,18 @@ makeFood(foodPositionX, foodPositionY, foodColor);
 
 // Game loop function (main function)
 function gameLoop() {
-  drawGrid(radius, width, height);
-  recordLastPosition();
-  snakeMotion();
-  drawSnakePosition(snakePositionX, snakePositionY);
-  eatFood();
-  makeFood(foodPositionX, foodPositionY, foodColor);
-  addLastPositionToTail(lastPositionSnake);
-  drawTail();
-  // checkOutPosition();
-  setTimeout(gameLoop, 1000 / fps);
+  if(isGameRunning){
+    drawGrid(radius, width, height);
+    recordLastPosition();
+    snakeMotion();
+    drawSnakePosition(snakePositionX, snakePositionY);
+    eatFood();
+    makeFood(foodPositionX, foodPositionY, foodColor);
+    addLastPositionToTail(lastPositionSnake);
+    drawTail();
+    checkCollision();
+    setTimeout(gameLoop, 1000 / fps);
+  }
 }
 
 // ---UNCOMENT TO LAUNCH THE GAME----
@@ -222,6 +228,17 @@ function addLastPositionToTail(lastPosition) {
       tempY = tempAfterY;
     }
   }
+}
+
+
+// Check collision of head and tail
+function checkCollision(){
+  tail.forEach(function(ele){
+    if(snakePositionX === ele.x && snakePositionY === ele.y){
+      isGameRunning = false;
+      gameOver.classList.add('dead');
+    }
+  })
 }
 
 // RANDOM VALUES

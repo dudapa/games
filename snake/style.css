@@ -22,3 +22,14 @@ body {
     text-align: center;
     margin-top: 5px;
 }
+
+.game-over {
+    color: red;
+    font-weight: bold;
+    margin: 0;
+    visibility: hidden;
+}
+
+.game-over.dead{
+    visibility: visible;
+}
