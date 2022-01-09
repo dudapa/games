@@ -40,7 +40,6 @@ let foodPositionX = randomPosition();
 let foodPositionY = randomPosition();
 let foodColor = randomColor();
 
-
 // Draw initial positons
 drawGrid(radius, width, height);
 drawSnakePosition(snakePositionX, snakePositionY);
@@ -48,7 +47,7 @@ makeFood(foodPositionX, foodPositionY, foodColor);
 
 // Game loop function (main function)
 function gameLoop() {
-  if(isGameRunning){
+  if (isGameRunning) {
     drawGrid(radius, width, height);
     recordLastPosition();
     snakeMotion();
@@ -63,7 +62,7 @@ function gameLoop() {
 }
 
 // ---UNCOMENT TO LAUNCH THE GAME----
-// gameLoop()
+//gameLoop()
 
 // PLAYBOARD
 
@@ -85,7 +84,6 @@ function drawBackground(width, height) {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, width, height);
 }
-
 
 // SNAKE
 
@@ -138,7 +136,7 @@ function drawSnakePosition(x, y) {
   ctx.closePath();
   ctx.fill();
 
-  // font awsome
+  // Add a smile emoji icon
   ctx.fillStyle = 'white';
   ctx.font = '50px FontAwesome';
   ctx.fillText('\uf118', x - 21.5, y + 17.5);
@@ -175,6 +173,11 @@ function makeFood(x, y, color) {
   ctx.arc(x, y, radius, 0, 2 * Math.PI);
   ctx.closePath();
   ctx.fill();
+  
+  // Add a star icon 
+  ctx.fillStyle = 'white';
+  ctx.font = '40px FontAwesome';
+  ctx.fillText('\uf005', x - 18, y + 15);
 }
 
 // Check if the food is eaten, if so then make a new food
@@ -191,7 +194,7 @@ function eatFood() {
 
 // TAIL
 
-// Add the last eaten food to the tail 
+// Add the last eaten food to the tail
 function addToTail(positionX, positionY, color) {
   const pieceOfTail = {
     x: positionX,
@@ -204,7 +207,7 @@ function addToTail(positionX, positionY, color) {
 // Draw tail
 function drawTail() {
   tail.forEach(function (ele) {
-    ctx.fillStyle = 'grey';
+    ctx.fillStyle = 'black';
     ctx.beginPath();
     ctx.arc(ele.x, ele.y, radius, 0, 2 * Math.PI);
     ctx.closePath();
@@ -235,15 +238,14 @@ function addLastPositionToTail(lastPosition) {
   }
 }
 
-
 // Check collision of head and tail
-function checkCollision(){
-  tail.forEach(function(ele){
-    if(snakePositionX === ele.x && snakePositionY === ele.y){
+function checkCollision() {
+  tail.forEach(function (ele) {
+    if (snakePositionX === ele.x && snakePositionY === ele.y) {
       isGameRunning = false;
       gameOver.classList.add('dead');
     }
-  })
+  });
 }
 
 // RANDOM VALUES
