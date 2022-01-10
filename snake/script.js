@@ -1,5 +1,7 @@
-// Listener
-document.addEventListener('keydown', playerMove);
+// buttons and rules
+const btnRules = document.querySelector('.btn-rules');
+const btnClose = document.querySelector('.btn-close');
+const rules = document.querySelector('.rules');
 
 // Score
 let score = document.querySelector('.score');
@@ -9,7 +11,7 @@ let gameOver = document.querySelector('.game-over');
 let isGameRunning = true;
 
 // Canvas and context
-const canvas = document.querySelector('.myCanvas');
+const canvas = document.querySelector('.canvas');
 const ctx = canvas.getContext('2d');
 
 // Playboard
@@ -62,7 +64,7 @@ function gameLoop() {
 }
 
 // ---UNCOMENT TO LAUNCH THE GAME----
-//gameLoop()
+// gameLoop()
 
 // PLAYBOARD
 
@@ -259,3 +261,19 @@ function randomNumber() {
 function randomColor() {
   return `rgb(${randomNumber()}, ${randomNumber()}, ${randomNumber()})`;
 }
+
+// Show rules
+function showRules(){
+  rules.classList.add('show');
+}
+
+// Close rules
+function closeRules(){
+  rules.classList.remove('show');
+}
+
+
+// Listeners
+document.addEventListener('keydown', playerMove);
+btnRules.addEventListener('click', showRules);
+btnClose.addEventListener('click', closeRules);
