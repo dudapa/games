@@ -29,10 +29,14 @@ body {
 }
 
 .game-over {
-    color: red;
+    position: absolute;
+    color: #fc0000;
     font-weight: bold;
     margin: 0;
     visibility: hidden;
+    font-size: 70px;
+    top: 40%;
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .game-over.dead{
@@ -46,6 +50,17 @@ body {
     background: #000;
     color: #fff;
     border-radius: 5px;
+}
+
+.btn.play-again {
+    position: absolute;
+    background-color:  #6ac96a;
+    top: 50%;
+    visibility: hidden;
+}
+
+.btn.play-again.dead{
+    visibility: visible;
 }
 
 .btn:focus {
@@ -83,4 +98,29 @@ body {
 .rules p {
     font-size: 20px;
     line-height: 30px;
+}
+
+.top-results {
+    position: absolute;
+    top: 30px;
+    right: 200px;
+    color: #fff;
+    padding: 0 20px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.top-results h2 {
+    margin: 5px;
+    text-decoration: underline;
+}
+
+.top-results ol {
+    padding: 5px 20px;
+    margin: 0;
+    font-size: 20px;
+}
+
+.top-results li {
+    margin-bottom: 10px;
 }

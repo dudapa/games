@@ -5,10 +5,20 @@ const rules = document.querySelector('.rules');
 
 // Score
 let score = document.querySelector('.score');
+let scoreRecord = getScore();
+console.log(scoreRecord)
 
 // Game Over
 let gameOver = document.querySelector('.game-over');
 let isGameRunning = true;
+
+// Button play again
+const playAgain = document.querySelector('.play-again');
+
+// Top three the highest scores 
+const first = document.querySelector('.first') 
+const second = document.querySelector('.second') 
+const third = document.querySelector('.third')
 
 // Canvas and context
 const canvas = document.querySelector('.canvas');
@@ -46,7 +56,7 @@ let foodColor = randomColor();
 drawGrid(radius, width, height);
 drawSnakePosition(snakePositionX, snakePositionY);
 makeFood(foodPositionX, foodPositionY, foodColor);
-
+updateTop3();
 // Game loop function (main function)
 function gameLoop() {
   if (isGameRunning) {
@@ -64,7 +74,7 @@ function gameLoop() {
 }
 
 // ---UNCOMENT TO LAUNCH THE GAME----
-// gameLoop()
+gameLoop()
 
 // PLAYBOARD
 
@@ -175,8 +185,8 @@ function makeFood(x, y, color) {
   ctx.arc(x, y, radius, 0, 2 * Math.PI);
   ctx.closePath();
   ctx.fill();
-  
-  // Add a star icon 
+
+  // Add a star icon
   ctx.fillStyle = 'white';
   ctx.font = '40px FontAwesome';
   ctx.fillText('\uf005', x - 18, y + 15);
@@ -246,8 +256,43 @@ function checkCollision() {
     if (snakePositionX === ele.x && snakePositionY === ele.y) {
       isGameRunning = false;
       gameOver.classList.add('dead');
+      playAgain.classList.add('dead');
+
+      scoreRecord.push(playerScore);
+      localStorage.setItem('score', JSON.stringify(scoreRecord));
+      updateTop3();
     }
   });
+}
+
+// SCORE
+
+// Select three the highest scores
+function threeHighest(array) {
+  array.sort(function (a, b) {
+    return b - a; // Descending order
+  });
+  return array.slice(0, 3);
+}
+
+// Get the score from the Local Storage
+function getScore(){
+  return localStorage.getItem('score') ? JSON.parse(localStorage.getItem('score')) : [];
+}
+
+// Update three the highest scores
+function updateTop3(){
+  const top3 = threeHighest(scoreRecord);
+  console.log('top3 ',top3)
+  for(let i = 0; i < top3.length; i++){
+    if (i === 0){
+      first.textContent = `${top3[i]} `;
+    } else if(i === 1) {
+      second.textContent = `${top3[i]} `;
+    } else if(i === 2) {
+      third.textContent = `${top3[i]} `;
+    }
+  }
 }
 
 // RANDOM VALUES
@@ -263,17 +308,21 @@ function randomColor() {
 }
 
 // Show rules
-function showRules(){
+function showRules() {
   rules.classList.add('show');
 }
 
 // Close rules
-function closeRules(){
+function closeRules() {
   rules.classList.remove('show');
 }
 
+function restart(){
+  location.reload();
+}
 
 // Listeners
 document.addEventListener('keydown', playerMove);
 btnRules.addEventListener('click', showRules);
 btnClose.addEventListener('click', closeRules);
+playAgain.addEventListener('click', restart);
