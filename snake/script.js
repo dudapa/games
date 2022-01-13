@@ -74,7 +74,7 @@ function gameLoop() {
 }
 
 // ---UNCOMENT TO LAUNCH THE GAME----
-gameLoop()
+// gameLoop()
 
 // PLAYBOARD
 
