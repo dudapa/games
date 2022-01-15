@@ -9,6 +9,13 @@ const showBtn = document.querySelector('.btn-rules');
 const closeBtn = document.querySelector('.btn-close');
 const rules = document.querySelector('.rules');
 
+// Game Over
+let gameOver = document.querySelector('.game-over');
+let isGameRunning = true;
+
+// Button play again
+const playAgain = document.querySelector('.play-again');
+
 // Ball object
 const ball = {
   x: width / 2,
@@ -104,13 +111,14 @@ function checkPaddleReflect() {
   }
 }
 
-// Game overe 
-function gameOver(){
-  if(ball.y + ball.size > height){
-    location.reload();
+// Game overe
+function bottomCheck() {
+  if (ball.y + ball.size > height) {
+    isGameRunning = false;
+    gameOver.classList.add('dead');
+    playAgain.classList.add('dead');
   }
 }
-
 
 // PADDLE FUNCTIONS
 
@@ -194,21 +202,23 @@ function drawBrick(brick) {
 // GAME LOOP
 
 function gameLoop() {
-  refresCanvas();
-  drawBall();
-  moveBall();
-  wallCollision();
-  drawPaddle();
-  movePaddle();
-  checkPaddleReflect();
-  brickDestroyed();
-  drawAllBricks();
-  gameOver()
+  if (isGameRunning) {
+    bottomCheck();
+    refresCanvas();
+    drawBall();
+    moveBall();
+    wallCollision();
+    drawPaddle();
+    movePaddle();
+    checkPaddleReflect();
+    brickDestroyed();
+    drawAllBricks();
 
-  requestAnimationFrame(gameLoop);
+    requestAnimationFrame(gameLoop);
+  }
 }
 
-// gameLoop();
+gameLoop();
 
 // Show and close rules
 function showRules() {
@@ -219,8 +229,13 @@ function closeRules() {
   rules.classList.remove('show');
 }
 
+function restart() {
+  location.reload();
+}
+
 // LISTENERS
 showBtn.addEventListener('click', showRules);
 closeBtn.addEventListener('click', closeRules);
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
+playAgain.addEventListener('click', restart);

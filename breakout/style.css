@@ -46,6 +46,17 @@ body {
   left: 70px;
 }
 
+.btn.play-again {
+  position: absolute;
+  background-color: #6ac96a;
+  top: 50%;
+  visibility: hidden;
+}
+
+.btn.play-again.dead {
+  visibility: visible;
+}
+
 .rules {
   position: absolute;
   top: 0;
@@ -67,4 +78,20 @@ body {
 .rules p {
   font-size: 20px;
   line-height: 30px;
+}
+
+
+.game-over {
+  position: absolute;
+  color: #fc0000;
+  font-weight: bold;
+  margin: 0;
+  visibility: hidden;
+  font-size: 70px;
+  top: 40%;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.game-over.dead {
+  visibility: visible;
 }
