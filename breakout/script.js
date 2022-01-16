@@ -93,7 +93,7 @@ function gameLoop() {
 drawStuff();
 
 // ⇊ UNCOMMENT TO PLAY ⇊
-//gameLoop();
+// gameLoop();
 
 // Canvas
 function refresCanvas() {

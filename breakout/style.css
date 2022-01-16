@@ -58,6 +58,12 @@ body {
   visibility: visible;
 }
 
+.btn-settings {
+  position: absolute;
+  top: 30px;
+  left: 200px;
+}
+
 .rules {
   position: absolute;
   top: 0;
