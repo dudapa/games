@@ -14,11 +14,19 @@ const gameOver = document.querySelector('.game-over');
 let isGameRunning = true;
 
 // Game win
-const gameWin = document.querySelector('.game-win')
+const gameWin = document.querySelector('.game-win');
 let breakBricksCount = 0;
 
 // Play again
 const playAgain = document.querySelector('.play-again');
+
+// Time
+let seconds = 0;
+let tens = 0;
+let secondsFormat = '00';
+let tensFormat = '00';
+let isSetInterval = false;
+let interval;
 
 // Ball object
 const ball = {
@@ -67,6 +75,12 @@ for (let i = 0; i < brickRow; i++) {
 // GAME LOOP
 function gameLoop() {
   if (isGameRunning) {
+
+    if(!isSetInterval){
+      startTime()
+      isSetInterval = true;
+    }
+
     refresCanvas();
     drawStuff();
     collisions();
@@ -79,7 +93,7 @@ function gameLoop() {
 drawStuff();
 
 // ⇊ UNCOMMENT TO PLAY ⇊
-// gameLoop();
+//gameLoop();
 
 // Canvas
 function refresCanvas() {
@@ -92,6 +106,7 @@ function drawStuff() {
   drawBall();
   drawPaddle();
   drawAllBricks();
+  drawTime();
 }
 
 // Move stuff
@@ -159,15 +174,17 @@ function bottomCheck() {
     isGameRunning = false;
     gameOver.classList.add('dead');
     playAgain.classList.add('dead');
+    stopInterval();
   }
 }
 
-// Check if the player won 
-function checkWin(){
-  if(breakBricksCount === (brickColumn * brickRow)){
+// Check if the player won
+function checkWin() {
+  if (breakBricksCount === brickColumn * brickRow) {
     isGameRunning = false;
     gameWin.classList.add('win');
-    playAgain.classList.add('win')
+    playAgain.classList.add('win');
+    stopInterval();
   }
 }
 
@@ -235,7 +252,7 @@ function brickDestroyed() {
       ) {
         ball.dy *= -1;
         brick.visible = false;
-        breakBricksCount ++
+        breakBricksCount++;
       }
     }
   }
@@ -258,6 +275,46 @@ function closeRules() {
 
 function restart() {
   location.reload();
+}
+
+// TIME MEASUREMENT
+
+function drawTime() {
+  ctx.fillStyle = '#f50a54';
+  ctx.font = '20px Open Sans';
+  ctx.fillText(`${secondsFormat}:${tensFormat}`, width - 60, 20);
+}
+
+function runTime() {
+  tens++;
+  if (tens < 9) {
+    tensFormat = '0' + tens;
+  }
+  if (tens > 9) {
+    tensFormat = tens;
+  }
+  if (tens > 99) {
+    seconds++;
+    if (seconds <= 9) {
+      secondsFormat = '0' + seconds;
+    } else {
+      secondsFormat = seconds;
+    }
+    tens = 0;
+  }
+}
+
+
+function startTime(){
+  interval = setInterval(runTime, 10);
+}
+
+function stopInterval(){
+  clearInterval(interval);
+  seconds = 0;
+  tens = 0;
+  secondsFormat = '00';
+  tensFormat = '00';
 }
 
 // LISTENERS
