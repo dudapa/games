@@ -13,7 +13,7 @@ const rules = document.querySelector('.rules');
 let gameOver = document.querySelector('.game-over');
 let isGameRunning = true;
 
-// Button play again
+// Play again
 const playAgain = document.querySelector('.play-again');
 
 // Ball object
@@ -60,10 +60,48 @@ for (let i = 0; i < brickRow; i++) {
   }
 }
 
-// CANVAS FUNCTIONS
+// GAME LOOP
+function gameLoop() {
+  if (isGameRunning) {
+    refresCanvas();
+    drawStuff();
+    collisions();
+    moveStuff();
+    requestAnimationFrame(gameLoop);
+  }
+}
+
+// Draw all initial positions of stuff
+drawStuff();
+
+// ⇊ UNCOMMENT TO PLAY ⇊
+// gameLoop();
+
+// Canvas
 function refresCanvas() {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, width, height);
+}
+
+// Draw basic stuff
+function drawStuff() {
+  drawBall();
+  drawPaddle();
+  drawAllBricks();
+}
+
+// Move stuff
+function moveStuff() {
+  moveBall();
+  movePaddle();
+}
+
+// Check all collision
+function collisions() {
+  bottomCheck();
+  wallCollision();
+  checkPaddleReflect();
+  brickDestroyed();
 }
 
 // BALL FUNCTIONS
@@ -76,7 +114,6 @@ function drawBall() {
   ctx.fill();
   ctx.closePath();
 }
-drawBall();
 
 // Move ball
 function moveBall() {
@@ -128,8 +165,6 @@ function drawPaddle() {
   ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
 
-drawPaddle();
-
 // Control paddle
 function keyDown(e) {
   if (e.key === 'ArrowLeft') {
@@ -172,8 +207,6 @@ function drawAllBricks() {
   }
 }
 
-drawAllBricks();
-
 //  Check if some brick was destroyed
 function brickDestroyed() {
   for (let i = 0; i < bricks.length; i++) {
@@ -198,27 +231,6 @@ function drawBrick(brick) {
   ctx.fillStyle = '#f50a54';
   ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
 }
-
-// GAME LOOP
-
-function gameLoop() {
-  if (isGameRunning) {
-    bottomCheck();
-    refresCanvas();
-    drawBall();
-    moveBall();
-    wallCollision();
-    drawPaddle();
-    movePaddle();
-    checkPaddleReflect();
-    brickDestroyed();
-    drawAllBricks();
-
-    requestAnimationFrame(gameLoop);
-  }
-}
-
-gameLoop();
 
 // Show and close rules
 function showRules() {
