@@ -10,8 +10,12 @@ const closeBtn = document.querySelector('.btn-close');
 const rules = document.querySelector('.rules');
 
 // Game Over
-let gameOver = document.querySelector('.game-over');
+const gameOver = document.querySelector('.game-over');
 let isGameRunning = true;
+
+// Game win
+const gameWin = document.querySelector('.game-win')
+let breakBricksCount = 0;
 
 // Play again
 const playAgain = document.querySelector('.play-again');
@@ -99,6 +103,7 @@ function moveStuff() {
 // Check all collision
 function collisions() {
   bottomCheck();
+  checkWin();
   wallCollision();
   checkPaddleReflect();
   brickDestroyed();
@@ -148,12 +153,21 @@ function checkPaddleReflect() {
   }
 }
 
-// Game overe
+// Game over
 function bottomCheck() {
   if (ball.y + ball.size > height) {
     isGameRunning = false;
     gameOver.classList.add('dead');
     playAgain.classList.add('dead');
+  }
+}
+
+// Check if the player won 
+function checkWin(){
+  if(breakBricksCount === (brickColumn * brickRow)){
+    isGameRunning = false;
+    gameWin.classList.add('win');
+    playAgain.classList.add('win')
   }
 }
 
@@ -221,6 +235,7 @@ function brickDestroyed() {
       ) {
         ball.dy *= -1;
         brick.visible = false;
+        breakBricksCount ++
       }
     }
   }
