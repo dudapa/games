@@ -6,7 +6,6 @@ const rules = document.querySelector('.rules');
 // Score
 let score = document.querySelector('.score');
 let scoreRecord = getScore();
-console.log(scoreRecord)
 
 // Game Over
 let gameOver = document.querySelector('.game-over');
