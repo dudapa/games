@@ -282,7 +282,6 @@ function getScore(){
 // Update three the highest scores
 function updateTop3(){
   const top3 = threeHighest(scoreRecord);
-  console.log('top3 ',top3)
   for(let i = 0; i < top3.length; i++){
     if (i === 0){
       first.textContent = `${top3[i]} `;
