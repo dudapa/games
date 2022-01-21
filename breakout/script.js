@@ -9,13 +9,43 @@ const showBtn = document.querySelector('.btn-rules');
 const closeBtn = document.querySelector('.btn-close');
 const rules = document.querySelector('.rules');
 
+// Settings
+const settingsBtn = document.querySelector('.btn-settings');
+const settingsBtnClose = document.querySelector('.btn-close-settings');
+const settings = document.querySelector('.settings');
+
+// Colors
+let root = document.documentElement;
+let baseColor = getComputedStyle(root).getPropertyValue('--default-color');
+const color1 = document.querySelector('.color1');
+const color2 = document.querySelector('.color2');
+const color3 = document.querySelector('.color3');
+const color4 = document.querySelector('.color4');
+const color5 = document.querySelector('.color5');
+const color6 = document.querySelector('.color6');
+const color7 = document.querySelector('.color7');
+const randomColorBtn = document.querySelector('.random-color');
+
+const colors = [
+  [color1, '#f50a54'],
+  [color2, '#00cc99'],
+  [color3, '#0099ff'],
+  [color4, '#cc33ff'],
+  [color5, '#ffcc00'],
+  [color6, '#6600cc'],
+  [color7, '#000'],
+];
+
 // Game Over
 const gameOver = document.querySelector('.game-over');
-let isGameRunning = true;
+let isGameRunning = false;
 
 // Game win
 const gameWin = document.querySelector('.game-win');
 let breakBricksCount = 0;
+
+// Start game
+const startGameBtn = document.querySelector('.start-game');
 
 // Play again
 const playAgain = document.querySelector('.play-again');
@@ -75,9 +105,8 @@ for (let i = 0; i < brickRow; i++) {
 // GAME LOOP
 function gameLoop() {
   if (isGameRunning) {
-
-    if(!isSetInterval){
-      startTime()
+    if (!isSetInterval) {
+      startTime();
       isSetInterval = true;
     }
 
@@ -85,15 +114,15 @@ function gameLoop() {
     drawStuff();
     collisions();
     moveStuff();
-    requestAnimationFrame(gameLoop);
   }
+  requestAnimationFrame(gameLoop);
 }
 
 // Draw all initial positions of stuff
 drawStuff();
 
 // ⇊ UNCOMMENT TO PLAY ⇊
-// gameLoop();
+gameLoop();
 
 // Canvas
 function refresCanvas() {
@@ -129,7 +158,7 @@ function collisions() {
 // Draw ball
 function drawBall() {
   ctx.beginPath();
-  ctx.fillStyle = '#f50a54';
+  ctx.fillStyle = `${baseColor}`;
   ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
   ctx.fill();
   ctx.closePath();
@@ -192,7 +221,7 @@ function checkWin() {
 
 // Draw paddle
 function drawPaddle() {
-  ctx.fillStyle = '#f50a54';
+  ctx.fillStyle = `${baseColor}`;
   ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
 
@@ -210,6 +239,10 @@ function keyUp(e) {
   if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
     paddle.dx = 0;
   }
+}
+
+function spaceDown(){
+  startGame();
 }
 
 // Move paddle
@@ -260,7 +293,7 @@ function brickDestroyed() {
 
 // Draw brick
 function drawBrick(brick) {
-  ctx.fillStyle = '#f50a54';
+  ctx.fillStyle = `${baseColor}`;
   ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
 }
 
@@ -273,6 +306,16 @@ function closeRules() {
   rules.classList.remove('show');
 }
 
+// Show and close settings
+function showSettings() {
+  settings.classList.add('show');
+}
+
+function closeSettings() {
+  settings.classList.remove('show');
+}
+
+// Default settings
 function restart() {
   location.reload();
 }
@@ -280,7 +323,7 @@ function restart() {
 // TIME MEASUREMENT
 
 function drawTime() {
-  ctx.fillStyle = '#f50a54';
+  ctx.fillStyle = `${baseColor}`;
   ctx.font = '20px Open Sans';
   ctx.fillText(`${secondsFormat}:${tensFormat}`, width - 60, 20);
 }
@@ -304,12 +347,11 @@ function runTime() {
   }
 }
 
-
-function startTime(){
+function startTime() {
   interval = setInterval(runTime, 10);
 }
 
-function stopInterval(){
+function stopInterval() {
   clearInterval(interval);
   seconds = 0;
   tens = 0;
@@ -317,9 +359,54 @@ function stopInterval(){
   tensFormat = '00';
 }
 
+// COLOR
+// Change color
+function colorSelected(color) {
+  colors.forEach((color) => {
+    color[0].classList.remove('selected');
+  });
+  color.path[0].classList.add('selected');
+
+  colors.forEach((color) => {
+    if (color[0].classList.contains('selected')) {
+      root.style.setProperty('--default-color', color[1]);
+      baseColor = getComputedStyle(root).getPropertyValue('--default-color');
+      drawStuff();
+    }
+  });
+}
+
+// Make random color
+function randomColor(){
+  let r = Math.floor(Math.random() * 256);
+  let g = Math.floor(Math.random() * 256);
+  let b = Math.floor(Math.random() * 256);
+  let color = `rgb(${r},${g},${b})`;
+  root.style.setProperty('--default-color', color);
+  baseColor = getComputedStyle(root).getPropertyValue('--default-color');
+  drawStuff();
+}
+
+function startGame(){
+  isGameRunning = true;
+  startGameBtn.style = 'visibility: hidden;';
+}
+
 // LISTENERS
-showBtn.addEventListener('click', showRules);
-closeBtn.addEventListener('click', closeRules);
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
+document.addEventListener('keydown', spaceDown);
+showBtn.addEventListener('click', showRules);
+closeBtn.addEventListener('click', closeRules);
+settingsBtn.addEventListener('click', showSettings);
+settingsBtnClose.addEventListener('click', closeSettings);
 playAgain.addEventListener('click', restart);
+startGameBtn.addEventListener('click', startGame)
+color1.addEventListener('click', colorSelected);
+color2.addEventListener('click', colorSelected);
+color3.addEventListener('click', colorSelected);
+color4.addEventListener('click', colorSelected);
+color5.addEventListener('click', colorSelected);
+color6.addEventListener('click', colorSelected);
+color7.addEventListener('click', colorSelected);
+randomColorBtn.addEventListener('click', randomColor);
