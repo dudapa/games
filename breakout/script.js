@@ -40,7 +40,7 @@ const colors = [
 // Save color in localStorage
 setLocalStorageColor();
 let localStorageColor = getLocalStorageColor();
-body.style = `background:${localStorageColor}`;
+// body.style = `background:${localStorageColor}`;
 
 // Game Over
 const gameOver = document.querySelector('.game-over');
