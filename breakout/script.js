@@ -43,12 +43,22 @@ let isGameRunning = false;
 // Game win
 const gameWin = document.querySelector('.game-win');
 let breakBricksCount = 0;
+let isGameWin = false
 
 // Start game
 const startGameBtn = document.querySelector('.start-game');
 
 // Play again
 const playAgain = document.querySelector('.play-again');
+
+// Score
+let score = document.querySelector('.score');
+let scoreRecord = getScore();
+
+// Top three the highest scores
+const first = document.querySelector('.first');
+const second = document.querySelector('.second');
+const third = document.querySelector('.third');
 
 // Time
 let seconds = 0;
@@ -136,6 +146,7 @@ function drawStuff() {
   drawPaddle();
   drawAllBricks();
   drawTime();
+  updateTop3();
 }
 
 // Move stuff
@@ -211,9 +222,13 @@ function bottomCheck() {
 function checkWin() {
   if (breakBricksCount === brickColumn * brickRow) {
     isGameRunning = false;
+    isGameWin = true
     gameWin.classList.add('win');
     playAgain.classList.add('win');
+    scoreRecord.push(`${secondsFormat}:${tensFormat}`);
+    localStorage.setItem('score', JSON.stringify(scoreRecord));
     stopInterval();
+    updateTop3();
   }
 }
 
@@ -241,7 +256,7 @@ function keyUp(e) {
   }
 }
 
-function spaceDown(){
+function spaceDown() {
   startGame();
 }
 
@@ -377,7 +392,7 @@ function colorSelected(color) {
 }
 
 // Make random color
-function randomColor(){
+function randomColor() {
   let r = Math.floor(Math.random() * 256);
   let g = Math.floor(Math.random() * 256);
   let b = Math.floor(Math.random() * 256);
@@ -387,9 +402,46 @@ function randomColor(){
   drawStuff();
 }
 
-function startGame(){
-  isGameRunning = true;
-  startGameBtn.style = 'visibility: hidden;';
+// SCORE
+
+// Select three the highest scores
+function threeHighest(array) {
+  array.sort(function (a, b) {
+    if (parseInt(a.split(':')[0]) - parseInt(b.split(':')[0]) === 0) {
+      return parseInt(a.split(':')[1]) - parseInt(b.split(':')[1]);
+    } else {
+      return parseInt(a.split(':')[0]) - parseInt(b.split(':')[0]);
+    }
+  });
+  return array.slice(0, 3);
+}
+
+// Get the score from the Local Storage
+function getScore() {
+  return localStorage.getItem('score')
+    ? JSON.parse(localStorage.getItem('score'))
+    : [];
+}
+
+// Update three the highest scores
+function updateTop3() {
+  const top3 = threeHighest(scoreRecord);
+  for (let i = 0; i < top3.length; i++) {
+    if (i === 0) {
+      first.textContent = `${top3[i]} `;
+    } else if (i === 1) {
+      second.textContent = `${top3[i]} `;
+    } else if (i === 2) {
+      third.textContent = `${top3[i]} `;
+    }
+  }
+}
+
+function startGame() {
+  if(!isGameWin){
+    isGameRunning = true;
+    startGameBtn.style = 'visibility: hidden;';
+  }
 }
 
 // LISTENERS
@@ -401,7 +453,7 @@ closeBtn.addEventListener('click', closeRules);
 settingsBtn.addEventListener('click', showSettings);
 settingsBtnClose.addEventListener('click', closeSettings);
 playAgain.addEventListener('click', restart);
-startGameBtn.addEventListener('click', startGame)
+startGameBtn.addEventListener('click', startGame);
 color1.addEventListener('click', colorSelected);
 color2.addEventListener('click', colorSelected);
 color3.addEventListener('click', colorSelected);

@@ -208,3 +208,28 @@ body {
   left: 13px;
   top: 8px;
 }
+
+.top-results {
+  position: absolute;
+  top: 30px;
+  right: 200px;
+  color: #fff;
+  padding: 0 20px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.top-results h2 {
+  margin: 5px;
+  text-decoration: underline;
+}
+
+.top-results ol {
+  padding: 5px 20px;
+  margin: 0;
+  font-size: 20px;
+}
+
+.top-results li {
+  margin-bottom: 10px;
+}
