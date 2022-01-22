@@ -15,8 +15,7 @@ const settingsBtnClose = document.querySelector('.btn-close-settings');
 const settings = document.querySelector('.settings');
 
 // Colors
-let root = document.documentElement;
-let baseColor = getComputedStyle(root).getPropertyValue('--default-color');
+const body = document.querySelector('body');
 const color1 = document.querySelector('.color1');
 const color2 = document.querySelector('.color2');
 const color3 = document.querySelector('.color3');
@@ -25,6 +24,8 @@ const color5 = document.querySelector('.color5');
 const color6 = document.querySelector('.color6');
 const color7 = document.querySelector('.color7');
 const randomColorBtn = document.querySelector('.random-color');
+let root = document.documentElement;
+let baseColor = getComputedStyle(root).getPropertyValue('--default-color');
 
 const colors = [
   [color1, '#f50a54'],
@@ -36,6 +37,11 @@ const colors = [
   [color7, '#000'],
 ];
 
+// Save color in localStorage
+setLocalStorageColor();
+let localStorageColor = getLocalStorageColor();
+body.style = `background:${localStorageColor}`;
+
 // Game Over
 const gameOver = document.querySelector('.game-over');
 let isGameRunning = false;
@@ -43,7 +49,7 @@ let isGameRunning = false;
 // Game win
 const gameWin = document.querySelector('.game-win');
 let breakBricksCount = 0;
-let isGameWin = false
+let isGameStop = false;
 
 // Start game
 const startGameBtn = document.querySelector('.start-game');
@@ -142,6 +148,7 @@ function refresCanvas() {
 
 // Draw basic stuff
 function drawStuff() {
+  body.style = `background:${localStorageColor}`;
   drawBall();
   drawPaddle();
   drawAllBricks();
@@ -169,7 +176,7 @@ function collisions() {
 // Draw ball
 function drawBall() {
   ctx.beginPath();
-  ctx.fillStyle = `${baseColor}`;
+  ctx.fillStyle = `${localStorageColor}`;
   ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
   ctx.fill();
   ctx.closePath();
@@ -212,6 +219,7 @@ function checkPaddleReflect() {
 function bottomCheck() {
   if (ball.y + ball.size > height) {
     isGameRunning = false;
+    isGameStop = true;
     gameOver.classList.add('dead');
     playAgain.classList.add('dead');
     stopInterval();
@@ -222,7 +230,7 @@ function bottomCheck() {
 function checkWin() {
   if (breakBricksCount === brickColumn * brickRow) {
     isGameRunning = false;
-    isGameWin = true
+    isGameStop = true;
     gameWin.classList.add('win');
     playAgain.classList.add('win');
     scoreRecord.push(`${secondsFormat}:${tensFormat}`);
@@ -236,7 +244,7 @@ function checkWin() {
 
 // Draw paddle
 function drawPaddle() {
-  ctx.fillStyle = `${baseColor}`;
+  ctx.fillStyle = `${localStorageColor}`;
   ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
 
@@ -308,7 +316,7 @@ function brickDestroyed() {
 
 // Draw brick
 function drawBrick(brick) {
-  ctx.fillStyle = `${baseColor}`;
+  ctx.fillStyle = `${localStorageColor}`;
   ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
 }
 
@@ -338,7 +346,7 @@ function restart() {
 // TIME MEASUREMENT
 
 function drawTime() {
-  ctx.fillStyle = `${baseColor}`;
+  ctx.fillStyle = `${localStorageColor}`;
   ctx.font = '20px Open Sans';
   ctx.fillText(`${secondsFormat}:${tensFormat}`, width - 60, 20);
 }
@@ -386,10 +394,13 @@ function colorSelected(color) {
     if (color[0].classList.contains('selected')) {
       root.style.setProperty('--default-color', color[1]);
       baseColor = getComputedStyle(root).getPropertyValue('--default-color');
+      localStorage.setItem('color', baseColor);
+      localStorageColor = getLocalStorageColor();
       drawStuff();
     }
   });
 }
+
 
 // Make random color
 function randomColor() {
@@ -399,7 +410,21 @@ function randomColor() {
   let color = `rgb(${r},${g},${b})`;
   root.style.setProperty('--default-color', color);
   baseColor = getComputedStyle(root).getPropertyValue('--default-color');
+  localStorage.setItem('color', baseColor)
+  localStorageColor = getLocalStorageColor();
   drawStuff();
+}
+
+// Set and get color from localStorage
+function setLocalStorageColor() {
+  localStorage.setItem(
+    'color',
+    localStorage.getItem('color') ? localStorage.getItem('color') : baseColor
+  );
+}
+
+function getLocalStorageColor() {
+  return localStorage.getItem('color');
 }
 
 // SCORE
@@ -438,7 +463,7 @@ function updateTop3() {
 }
 
 function startGame() {
-  if(!isGameWin){
+  if (!isGameStop) {
     isGameRunning = true;
     startGameBtn.style = 'visibility: hidden;';
   }
