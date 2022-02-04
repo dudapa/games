@@ -233,3 +233,9 @@ body {
 .top-results li {
   margin-bottom: 10px;
 }
+
+@media screen  and (max-width: 1600px) {
+  .top-results{
+    right: 100px;
+  }
+}
