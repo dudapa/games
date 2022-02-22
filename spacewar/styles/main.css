@@ -7,10 +7,14 @@
 body {
     font-family: "Open Sans", sans-serif;
     height: 100vh;
-    text-align: center;
+    background-image: url("../images/background.svg");
+    background-repeat: repeat;
     overflow: hidden;
 }
-
+ 
 .canvas {
-    border: 5px solid red;
+    margin: 0 auto;
+    display: block;
+    background-image: url("../images/planet.webp");
+    background-size: cover;
 }
