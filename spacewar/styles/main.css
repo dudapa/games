@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Open Sans", sans-serif;
+    height: 100vh;
+    text-align: center;
+    overflow: hidden;
+}
+
+.canvas {
+    border: 5px solid red;
+}
