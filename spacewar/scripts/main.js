@@ -27,6 +27,9 @@ class Spacewar {
   }
 }
 
+const opens = new OpeningScreen();
+opens.draw() 
+
 // const spacewar = new Spacewar();
 // const spaceShip = new SpaceShip();
 
