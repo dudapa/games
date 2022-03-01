@@ -6,7 +6,7 @@ class SpaceShip {
         this.src = '../images/playerShip.png';
     }
 
-    drawShip() {
+    draw() {
         const image = new Image();
         image.src = this.src;
         ctx.drawImage(image, this.x, this.y, this.sizeShip, this.size);

@@ -1,62 +1,119 @@
+// Canvas
 const canvas = document.querySelector('.canvas');
 canvas.width = 900;
 canvas.height = 700;
 const ctx = canvas.getContext('2d');
 
-resize();
-
 // Functions to resize the game screen depending on size of screen
-function resize() {
+function resizeScreen(canvas) {
   const ratio = canvas.width / canvas.height;
 
   const height = window.innerHeight - 20;
   const width = height * ratio;
-
-  canvas.style.width = width + 'px';
-  canvas.style.height = height + 'px';
+  
+  canvas.width = width;
+  canvas.height = height;
 }
 
 // Main class of the game
 class Spacewar {
-  constructor() {
+  constructor(canvas) {
+    // Canvas properties
+    this.canvas = canvas;
     this.width = canvas.width;
     this.height = canvas.height;
-    this.settings = {
-      fps: 1 / 60,
+    
+    // Initial value of the game
+    this.level = 1;
+    this.shields = 2;
+    this.score = 0;
+
+    // Actual states of the game 
+    this.stateOfGame = [];
+    
+    // Settings
+    this.settings = { 
+      fps60: (1000 / 60),
     };
+
+    this.areaOfMove = {
+      top: 150,
+      bottom: 650,
+      left: 100,
+      right: 800,
+    }
+    
+    this.pressedKeys = {};
+  }
+
+  // Get current state and positions of the game
+  currentPosition() {
+    return this.stateOfGame.length > 0 ? this.stateOfGame[this.stateOfGame.length -1] : null; 
+  }
+
+  // Add current position in the stateOfGeme
+  goToPosition(position) { 
+    if (this.currentPosition()) {
+      this.stateOfGame.length = 0;
+    }
+
+    if (position.entry) {
+      position.entry(spacewar);
+    }
+    // Set the current game posittion to the stateOfGame
+    this.stateOfGame.push(position);
+  }
+
+  keyDown(keyName) {
+    this.pressedKeys[keyName] = true;
+    if(this.currentPosition() && this.currentPosition().keyDown) {
+      this.currentPosition().keyDown(this, keyName);  
+    }
+  }
+
+  keyUp(keyCode) {
+    delete this.pressedKeys[keyCode]
+  }
+
+  // Launch the game
+  start() {
+    setInterval(function() {
+      gameLoop(spacewar)
+    }, this.settings.fps60)
+    this.goToPosition(new OpeningScreen());
   }
 }
 
-const opens = new OpeningScreen();
-opens.draw() 
 
-// const spacewar = new Spacewar();
-// const spaceShip = new SpaceShip();
+function gameLoop(spacewar){
+  let currentPosition = spacewar.currentPosition();
 
-// spaceShip.drawShip();
+  if (currentPosition) {
+    if (currentPosition.update) {
+      currentPosition.update(spacewar);
+    }
+    if (currentPosition.draw) {
+      currentPosition.draw(spacewar)
+    }
+  }
+}
 
-// function start() {
-//   setInterval(function () {
-//     drawStuff();
-//   }, (1 / 60) * 1000);
-// }
+window.addEventListener('keydown', function (e) {
+  if (e.key === ' ' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    e.preventDefault()
+    spacewar.keyDown(e.key)
+  }
+});
 
-// function drawStuff() {
-//   const myImage = new Image();
-//   myImage.src = 'images/enemy1.png';
-//   ctx.drawImage(myImage, 50, 50, 40, 40);
+window.addEventListener('keyup', function (e) {
+  if (e.key === ' ' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    e.preventDefault();
+    spacewar.keyUp(e.key);
+  }
+});
 
-//   const myImage2 = new Image();
-//   myImage2.src = 'images/playerShip.png';
-//   ctx.drawImage(myImage2, canvas.width / 2, canvas.height - 100, 60, 50);
+window.addEventListener('load', resizeScreen(canvas));
 
-//   const myImage4 = new Image();
-//   myImage4.src = 'images/enemy4.png';
-//   ctx.drawImage(myImage4, 350, 50, 40, 40);
+const spacewar = new Spacewar(canvas);
+spacewar.start()
 
-//   const myImage7 = new Image();
-//   myImage7.src = 'images/meteorBrown_med1.png';
-//   ctx.drawImage(myImage7, 500, 400);
-// }
-
-// start();
