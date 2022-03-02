@@ -16,10 +16,10 @@ class SpaceShip {
 
 
 class Enemy {
-    constructor() {
+    constructor(x, y) {
         this.enemySize = 40;
-        this.x = 200;
-        this.y = 300;
+        this.x = x;
+        this.y = y;
         this.src = '../images/enemy1.png';
         this.speed = 5; 
     }
@@ -29,9 +29,34 @@ class Enemy {
         image.src = this.src;
         ctx.drawImage(image, this.x, this.y, this.enemySize, this.enemySize)
     }
+
 }
 
-class playerBullet {
+class Army {
+    constructor() { 
+    }
+
+    createArmy() {
+        const rowCount = 4;
+        const columnCount = 9;
+        const army = [];
+        let x = 100;
+        let y = 100; 
+        for(let row = 0; row < rowCount; row++) {
+            for(let column = 0; column < columnCount; column++){
+                const enemy = new Enemy(x, y);
+                army.push(enemy);
+                x += 70;
+            }
+            x = 100;
+            y += 50;
+        }
+        return army;
+    }
+}
+
+
+class PlayerBullet {
     constructor(x, y) {
         this.x = x;
         this.y = y;

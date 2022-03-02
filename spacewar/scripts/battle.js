@@ -3,8 +3,8 @@ class Battle {
     this.settings = spacewar.settings;
     this.areaOfMove = spacewar.areaOfMove;
     this.spaceShip = new SpaceShip();
-    this.enemy = new Enemy();
-    this.enemies = [];
+    this.army = new Army();
+    this.enemies = this.army.createArmy();
     this.asteroids = [];
     this.bullets = [];
     this.lastBulletTime = null;
@@ -66,7 +66,9 @@ class Battle {
     }
 
     // Draw enemies
-    this.enemy.draw();
+    for (let enemy of this.enemies) {
+      enemy.draw();
+    }
   }
 
   // Shoot bullets
@@ -77,7 +79,7 @@ class Battle {
     ) {
       const x = this.spaceShip.x + this.spaceShip.shipSize / 2 - 7;
       const y = this.spaceShip.y - this.spaceShip.shipSize / 2;
-      this.bullets.push(new playerBullet(x, y));
+      this.bullets.push(new PlayerBullet(x, y));
       this.lastBulletTime = new Date().getTime();
     }
   }
