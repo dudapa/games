@@ -1,3 +1,20 @@
+class Battle {
+    constructor(spacewar) {
+        this.settings = spacewar.settings
+        this.spaceShip = new SpaceShip();
+    }
+
+    update() {
+
+    }
+    
+    draw(spacewar) {
+        ctx.clearRect(0, 0, spacewar.width, spacewar.height);
+        this.spaceShip.draw()
+    } 
+}
+
+
 class ShowLevel {
     constructor(spacewar) {
         this.level = spacewar.level;
@@ -5,26 +22,15 @@ class ShowLevel {
     }
 
     draw(spacewar) {
-        this.sizeFont += 1;
-        if (this.sizeFont > 70 ) {
-            console.log(`Game has started`);
-            spacewar.goToPosition(new Battle(spacewar))
+        this.sizeFont += 0.7;
+        if (this.sizeFont > 90 ) {
+            spacewar.goToPosition(new Battle(spacewar));
         }
         ctx.clearRect(0, 0, spacewar.width, spacewar.height)
         ctx.font = `${this.sizeFont}px Open Sans bold`;
         ctx.fillStyle = '#ffc709';
         ctx.textAlign = 'center';
         ctx.fillText('Get ready for level 1', spacewar.width / 2, 100);
+
     }
-}
-
-
-class Battle {
-    draw(spacewar) {
-        ctx.clearRect(0, 0, spacewar.width, spacewar.height);
-        ctx.font = `${70}px Open Sans bold`;
-        ctx.fillStyle = '#ffc709';
-        ctx.textAlign = 'center';
-        ctx.fillText('I am in the battle', spacewar.width / 2, 100);
-    } 
 }

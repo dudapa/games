@@ -28,7 +28,7 @@ class Spacewar {
     this.shields = 2;
     this.score = 0;
 
-    // Actual states of the game 
+    // Actual state of the game 
     this.stateOfGame = [];
     
     // Settings

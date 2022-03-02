@@ -1,15 +1,15 @@
 class SpaceShip {
     constructor() {
-        this.x = canvas.width / 2;
-        this.y = canvas.height / 2;
-        this.sizeShip = 100;
+        this.sizeShip = 60;
+        this.x = canvas.width / 2 - 30;
+        this.y = canvas.height - 100;
         this.src = '../images/playerShip.png';
+        this.speed = 1;
     }
 
     draw() {
         const image = new Image();
         image.src = this.src;
-        ctx.drawImage(image, this.x, this.y, this.sizeShip, this.size);
-        console.log('I drew a ship')
+        ctx.drawImage(image, this.x, this.y, this.sizeShip, this.sizeShip);
     }
 }
