@@ -3,16 +3,21 @@ class Battle {
     this.settings = spacewar.settings;
     this.areaOfMove = spacewar.areaOfMove;
     this.spaceShip = new SpaceShip();
+    this.enemy = new Enemy();
     this.enemies = [];
+    this.asteroids = [];
     this.bullets = [];
+    this.lastBulletTime = null;
   }
 
+  // update method
   update(spacewar) {
     const spaceShip = this.spaceShip;
     const spaceShipSpeed = spaceShip.speed;
+
     const leftRestriction = this.areaOfMove.horizontal;
     const rightRestriction =
-      spacewar.width - this.areaOfMove.horizontal - spaceShip.sizeShip;
+      spacewar.width - this.areaOfMove.horizontal - spaceShip.shipSize;
 
     // Move with the spaceship
     if (spacewar.pressedKeys['ArrowLeft']) {
@@ -32,15 +37,53 @@ class Battle {
       spaceShip.x = rightRestriction;
     }
 
-    
+    // Check if the player is shooting
+    if (spacewar.pressedKeys[' ']) {
+      this.shoot();
+    }
+
+    // Move bullets
+    for (let i = 0; i < this.bullets.length; i++) {
+      const bullet = this.bullets[i];
+      bullet.y -= bullet.speed;
+      console.log(this.bullets);
+      if (bullet.y < 0) {
+        this.bullets.splice(i, 1);
+      }
+    }
   }
 
+  // draw method
   draw(spacewar) {
     ctx.clearRect(0, 0, spacewar.width, spacewar.height);
+
+    // Draw the spaceship
     this.spaceShip.draw();
+
+    // Draw bullets
+    for (let bullet of this.bullets) {
+      bullet.draw();
+    }
+
+    // Draw enemies
+    this.enemy.draw();
+  }
+
+  // Shoot bullets
+  shoot() {
+    if (
+      this.lastBulletTime === null ||
+      new Date().getTime() - this.lastBulletTime > this.settings.bulletFrequency
+    ) {
+      const x = this.spaceShip.x + this.spaceShip.shipSize / 2 - 7;
+      const y = this.spaceShip.y - this.spaceShip.shipSize / 2;
+      this.bullets.push(new playerBullet(x, y));
+      this.lastBulletTime = new Date().getTime();
+    }
   }
 }
 
+// Display actual level of the game on the screen
 class ShowLevel {
   constructor(spacewar) {
     this.level = spacewar.level;

@@ -23,6 +23,7 @@ class Spacewar {
     // Settings
     this.settings = { 
       fps60: (1000 / 60),
+      bulletFrequency: 500,
     };
 
     this.areaOfMove = {
