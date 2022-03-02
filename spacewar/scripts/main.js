@@ -4,17 +4,6 @@ canvas.width = 900;
 canvas.height = 700;
 const ctx = canvas.getContext('2d');
 
-// Functions to resize the game screen depending on size of screen
-function resizeScreen(canvas) {
-  const ratio = canvas.width / canvas.height;
-
-  const height = window.innerHeight - 20;
-  const width = height * ratio;
-  
-  canvas.width = width;
-  canvas.height = height;
-}
-
 // Main class of the game
 class Spacewar {
   constructor(canvas) {
@@ -97,6 +86,18 @@ function gameLoop(spacewar){
     }
   }
 }
+
+// Functions to resize the game screen depending on size of screen
+function resizeScreen(canvas) {
+  const ratio = canvas.width / canvas.height;
+
+  const height = window.innerHeight - 20;
+  const width = height * ratio;
+  
+  canvas.width = width;
+  canvas.height = height;
+}
+
 
 window.addEventListener('keydown', function (e) {
   if (e.key === ' ' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {

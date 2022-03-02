@@ -4,7 +4,7 @@ class SpaceShip {
         this.x = canvas.width / 2 - 30;
         this.y = canvas.height - 100;
         this.src = '../images/playerShip.png';
-        this.speed = 1;
+        this.speed = 7;
     }
 
     draw() {
