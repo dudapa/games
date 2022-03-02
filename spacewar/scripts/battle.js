@@ -1,6 +1,7 @@
 class Battle {
   constructor(spacewar) {
     this.settings = spacewar.settings;
+    this.areaOfMove = spacewar.areaOfMove;
     this.spaceShip = new SpaceShip();
     this.enemies = [];
     this.bullets = [];
@@ -9,7 +10,11 @@ class Battle {
   update(spacewar) {
     const spaceShip = this.spaceShip;
     const spaceShipSpeed = spaceShip.speed;
+    const leftRestriction = this.areaOfMove.horizontal;
+    const rightRestriction =
+      spacewar.width - this.areaOfMove.horizontal - spaceShip.sizeShip;
 
+    // Move with the spaceship
     if (spacewar.pressedKeys['ArrowLeft']) {
       spaceShip.x -= spaceShipSpeed;
     }
@@ -17,6 +22,17 @@ class Battle {
     if (spacewar.pressedKeys['ArrowRight']) {
       spaceShip.x += spaceShipSpeed;
     }
+
+    // Check if the spaceship is after area of move
+    if (spaceShip.x < leftRestriction) {
+      spaceShip.x = leftRestriction;
+    }
+
+    if (spaceShip.x > rightRestriction) {
+      spaceShip.x = rightRestriction;
+    }
+
+    
   }
 
   draw(spacewar) {

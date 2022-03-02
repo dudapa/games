@@ -26,10 +26,8 @@ class Spacewar {
     };
 
     this.areaOfMove = {
-      top: 150,
-      bottom: 650,
-      left: 100,
-      right: 800,
+      vertical: 100,
+      horizontal: 50,
     }
     
     this.pressedKeys = {};
