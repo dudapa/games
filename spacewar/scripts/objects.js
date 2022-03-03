@@ -21,7 +21,7 @@ class Enemy {
         this.x = x;
         this.y = y;
         this.src = '../images/enemy1.png';
-        this.speed = 5; 
+        this.speed = 1.5; 
     }
 
     draw() {
@@ -38,7 +38,7 @@ class Army {
 
     createArmy() {
         const rowCount = 4;
-        const columnCount = 9;
+        const columnCount = 8;
         const army = [];
         let x = 100;
         let y = 100; 

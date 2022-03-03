@@ -5,6 +5,12 @@ class Battle {
     this.spaceShip = new SpaceShip();
     this.army = new Army();
     this.enemies = this.army.createArmy();
+    this.directionOfEnemies = 1;
+    this.enemiesGoingDown = false;
+    this.horizontalMovingEnemies = 1;
+    this.verticalMovingEnemies = 0;
+    this.deep = 2000;
+    this.currentDeep = 0;
     this.asteroids = [];
     this.bullets = [];
     this.lastBulletTime = null;
@@ -14,7 +20,6 @@ class Battle {
   update(spacewar) {
     const spaceShip = this.spaceShip;
     const spaceShipSpeed = spaceShip.speed;
-
     const leftRestriction = this.areaOfMove.horizontal;
     const rightRestriction =
       spacewar.width - this.areaOfMove.horizontal - spaceShip.shipSize;
@@ -46,9 +51,43 @@ class Battle {
     for (let i = 0; i < this.bullets.length; i++) {
       const bullet = this.bullets[i];
       bullet.y -= bullet.speed;
-      console.log(this.bullets);
       if (bullet.y < 0) {
         this.bullets.splice(i, 1);
+      }
+    }
+
+    // Move enemy's army
+    let enemyReachSide = false;
+    for (let i = 0; i < this.enemies.length; i++) {
+      let enemy = this.enemies[i];
+      let newPosition =
+        enemy.x +
+        enemy.speed * this.directionOfEnemies * this.horizontalMovingEnemies;
+
+      if (newPosition < leftRestriction || newPosition > rightRestriction) {
+        this.directionOfEnemies *= -1;
+        enemyReachSide = true;
+        this.horizontalMovingEnemies = 0;
+        this.verticalMovingEnemies = 1;
+        this.enemiesGoingDown = true;
+      }
+
+      if (!enemyReachSide) {
+        enemy.x = newPosition;
+      }
+    }
+
+    if (this.enemiesGoingDown) {
+      for (let i = 0; i < this.enemies.length; i++) {
+        let enemy = this.enemies[i];
+        enemy.y += enemy.speed;
+        this.currentDeep += enemy.speed * this.verticalMovingEnemies;
+        if (this.currentDeep > this.deep) {
+          this.horizontalMovingEnemies = 1;
+          this.verticalMovingEnemies = 0;
+          this.enemiesGoingDown = false;
+          this.currentDeep = 0;
+        }
       }
     }
   }
