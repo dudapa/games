@@ -4,7 +4,7 @@ class Battle {
     this.settings = spacewar.settings;
     this.areaOfMove = spacewar.areaOfMove;
     this.spaceShip = new SpaceShip();
-    this.army = new Army();
+    this.army = new Army(this.level);
     this.enemies = this.army.createArmy();
     this.directionOfEnemies = 1;
     this.enemiesGoingDown = false;
@@ -122,7 +122,8 @@ class Battle {
       if (enemyChanceToFire > chanceForFire) {
         let enemyBullet = new EnemyBullet(
           enemy.x + enemy.enemySize / 2,
-          enemy.y + enemy.enemySize
+          enemy.y + enemy.enemySize,
+          this.level
         );
         this.enemyBullets.push(enemyBullet);
       }

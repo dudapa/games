@@ -16,11 +16,12 @@ class SpaceShip {
 }
 
 class Enemy {
-  constructor(x, y) {
+  constructor(x, y, level) {
     this.enemySize = 40;
     this.x = x;
     this.y = y;
-    this.src = '../images/enemy1.png';
+    this.level = level;
+    this.src = `../images/enemy${this.level}.png`;
     this.speed = 1.5;
   }
 
@@ -32,7 +33,9 @@ class Enemy {
 }
 
 class Army {
-  constructor() {}
+  constructor(level) {
+    this.level = level;
+  }
 
   createArmy() {
     const rowCount = 4;
@@ -42,7 +45,7 @@ class Army {
     let y = 100;
     for (let row = 0; row < rowCount; row++) {
       for (let column = 0; column < columnCount; column++) {
-        const enemy = new Enemy(x, y);
+        const enemy = new Enemy(x, y, this.level);
         army.push(enemy);
         x += 70;
       }
@@ -71,12 +74,13 @@ class PlayerBullet {
 }
 
 class EnemyBullet {
-  constructor(x, y) {
+  constructor(x, y, level) {
     this.width = 15;
-    this.height = 30;
+    this.level = level;
+    this.height = this.level <= 4 ? 30 : 60;
     this.x = x;
     this.y = y;
-    this.src = '../images/fire2.png';
+    this.src = this.level <= 4 ? '../images/fire2.png' : '../images/fire3.png';
     this.speed = 10;
   }
 
