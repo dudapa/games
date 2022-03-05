@@ -1,5 +1,7 @@
 class Battle {
   constructor(spacewar) {
+    this.level = spacewar.level;
+    this.score = 0;
     this.settings = spacewar.settings;
     this.areaOfMove = spacewar.areaOfMove;
     this.spaceShip = new SpaceShip();
@@ -104,6 +106,7 @@ class Battle {
           bullet.y < enemy.y + enemy.enemySize &&
           bullet.y > enemy.y
         ) {
+          this.score += 5;
           this.enemies.splice(i, 1);
           this.bullets.splice(j, 1);
         }
@@ -178,6 +181,7 @@ class Battle {
     let speceshipLeft = this.spaceShip.x;
     let spaceShipRight = this.spaceShip.x + this.spaceShip.shipSize;
     let spaceShipTop = this.spaceShip.y;
+    let spaceShipBottom = this.spaceShip.y + this.spaceShip.shipSize;
 
     for (let i = 0; i < this.meteors.length; i++) {
       let meteor = this.meteors[i];
@@ -185,11 +189,13 @@ class Battle {
       let meteorLeft = meteor.x;
       let meteorRight = meteor.x + meteor.meteorSize;
       let meteorBottom = meteor.y + meteor.meteorSize;
+      let meteorTop = meteor.y
 
       if (
         (meteorLeft > speceshipLeft || meteorRight > speceshipLeft) &&
         (meteorLeft < spaceShipRight || meteorRight < spaceShipRight) &&
-        meteorBottom > spaceShipTop
+        (meteorBottom > spaceShipTop || meteorTop > spaceShipTop) &&
+        (meteorBottom < spaceShipBottom|| meteorTop < spaceShipBottom)
       ) {
         if (meteor.notation === 'big') {
           this.spaceShip.shields -= 3;
@@ -271,6 +277,14 @@ class Battle {
     for (let meteor of this.meteors) {
       meteor.draw();
     }
+
+    // Draw current level on the screen
+    ctx.font = '30px Open Sans bold';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText(`LEVEL: ${this.level}`, 80, 30);
+    ctx.fillText(`SCORE: ${this.score}`, spacewar.width/ 2, 30);
+    ctx.fillText(`SHIELDS: ${this.spaceShip.shields}`, spacewar.width - 100, 30);
   }
 
   // Shoot bullets
