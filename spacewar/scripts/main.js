@@ -117,5 +117,7 @@ window.addEventListener('keyup', function (e) {
 window.addEventListener('load', resizeScreen(canvas));
 
 const spacewar = new Spacewar(canvas);
-spacewar.start()
+spacewar.sounds = new Sounds();
+spacewar.sounds.init();
+spacewar.start();
 

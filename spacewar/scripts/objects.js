@@ -20,7 +20,7 @@ class Enemy {
     this.enemySize = 40;
     this.x = x;
     this.y = y;
-    this.src = '../images/enemy2.png';
+    this.src = '../images/enemy1.png';
     this.speed = 1.5;
   }
 

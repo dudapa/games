@@ -1,7 +1,6 @@
 class Battle {
   constructor(spacewar) {
     this.level = spacewar.level;
-    this.score = 0;
     this.settings = spacewar.settings;
     this.areaOfMove = spacewar.areaOfMove;
     this.spaceShip = new SpaceShip();
@@ -47,6 +46,7 @@ class Battle {
 
     // Check if the player is shooting
     if (spacewar.pressedKeys[' ']) {
+      spacewar.sounds.playSound('shot');
       this.shootPlayer();
     }
 
@@ -106,7 +106,8 @@ class Battle {
           bullet.y < enemy.y + enemy.enemySize &&
           bullet.y > enemy.y
         ) {
-          this.score += 5;
+          spacewar.sounds.playSound('explosion_enemy');
+          spacewar.score += 10;
           this.enemies.splice(i, 1);
           this.bullets.splice(j, 1);
         }
@@ -146,13 +147,14 @@ class Battle {
         enemyBullet.y < this.spaceShip.y + this.spaceShip.shipSize
       ) {
         console.log('Shields go down');
+        spacewar.sounds.playSound('shieldDown');
         this.spaceShip.shields -= 1;
         this.enemyBullets.splice(i, 1);
       }
     }
 
     // Create meteors
-    const chanceMeteorToAppear = 0.991;
+    const chanceMeteorToAppear = 0.9999; //0.991
     let chanceToAppear = Math.random();
     if (chanceToAppear > chanceMeteorToAppear) {
       let max = spacewar.width - 3 * this.areaOfMove.horizontal;
@@ -165,7 +167,6 @@ class Battle {
       } else {
         this.meteors.push(new SmallMeteor(meteorX, 0));
       }
-
     }
 
     // Move meteors
@@ -189,25 +190,26 @@ class Battle {
       let meteorLeft = meteor.x;
       let meteorRight = meteor.x + meteor.meteorSize;
       let meteorBottom = meteor.y + meteor.meteorSize;
-      let meteorTop = meteor.y
+      let meteorTop = meteor.y;
 
       if (
         (meteorLeft > speceshipLeft || meteorRight > speceshipLeft) &&
         (meteorLeft < spaceShipRight || meteorRight < spaceShipRight) &&
         (meteorBottom > spaceShipTop || meteorTop > spaceShipTop) &&
-        (meteorBottom < spaceShipBottom|| meteorTop < spaceShipBottom)
+        (meteorBottom < spaceShipBottom || meteorTop < spaceShipBottom)
       ) {
         if (meteor.notation === 'big') {
           this.spaceShip.shields -= 3;
           this.meteors.splice(i, 1);
         } else {
           this.spaceShip.shields -= 1;
+          spacewar.sounds.playSound('shieldDown');
           this.meteors.splice(i, 1);
         }
       }
     }
 
-    // Check collision between meteor and play's bullet
+    // Check collision between meteor and player's bullet
     for (let i = 0; i < this.meteors.length; i++) {
       let meteor = this.meteors[i];
       for (let j = 0; j < this.bullets.length; j++) {
@@ -223,9 +225,15 @@ class Battle {
         }
       }
       if (meteor.lives === 0) {
+        if (meteor.notation === 'big') {
+          spacewar.score += 15;
+        } else {
+          spacewar.score += 5;
+        }
+
+        spacewar.sounds.playSound('explosion');
         this.meteors.splice(i, 1);
       }
-
     }
 
     // GAMEOVER
@@ -235,19 +243,28 @@ class Battle {
       if (
         enemy.x > this.spaceShip.x &&
         enemy.x < this.spaceShip.x + this.spaceShip.shipSize &&
-        enemy.y + enemy.enemySize > this.spaceShip.y
+        enemy.y + enemy.enemySize > this.spaceShip.y 
       ) {
-        console.log('game over');
+        spacewar.sounds.stopSounds('easy');
+        spacewar.sounds.stopSounds('medium');
+        spacewar.sounds.stopSounds('hard');
+        spacewar.sounds.playSound('playerDeath');
+        spacewar.goToPosition(new OpeningScreen());
       }
       // Check if the speceship was destroyed
       if (this.spaceShip.shields < 0) {
-        console.log('game over');
+        spacewar.sounds.stopSounds('easy');
+        spacewar.sounds.stopSounds('medium');
+        spacewar.sounds.stopSounds('hard');
+        spacewar.sounds.playSound('playerDeath');
+        spacewar.goToPosition(new OpeningScreen());
       }
     }
 
     // VICTORY (all enemies are destroyed)
     if (this.enemies.length === 0) {
-      console.log('Victory!!');
+      spacewar.level += 1;
+      spacewar.goToPosition(new ShowLevel(spacewar));
     }
   }
 
@@ -278,13 +295,17 @@ class Battle {
       meteor.draw();
     }
 
-    // Draw current level on the screen
+    // Draw current level, score and shields on the screen
     ctx.font = '30px Open Sans bold';
     ctx.fillStyle = '#ffffff';
     ctx.textAlign = 'center';
     ctx.fillText(`LEVEL: ${this.level}`, 80, 30);
-    ctx.fillText(`SCORE: ${this.score}`, spacewar.width/ 2, 30);
-    ctx.fillText(`SHIELDS: ${this.spaceShip.shields}`, spacewar.width - 100, 30);
+    ctx.fillText(`SCORE: ${spacewar.score}`, spacewar.width / 2, 30);
+    ctx.fillText(
+      `SHIELDS: ${this.spaceShip.shields}`,
+      spacewar.width - 100,
+      30
+    );
   }
 
   // Shoot bullets
@@ -311,12 +332,23 @@ class ShowLevel {
   draw(spacewar) {
     this.sizeFont += 0.7;
     if (this.sizeFont > 90) {
+      if (this.level <= 2) {
+        spacewar.sounds.playSound('easy');
+      }
+      if (this.level > 2 && this.level <= 4) {
+        spacewar.sounds.stopSounds('easy');
+        spacewar.sounds.playSound('medium');
+      }
+      if (this.level > 4 && this.level <= 6) {
+        spacewar.sounds.stopSounds('medium');
+        spacewar.sounds.playSound('hard');
+      }
       spacewar.goToPosition(new Battle(spacewar));
     }
     ctx.clearRect(0, 0, spacewar.width, spacewar.height);
     ctx.font = `${this.sizeFont}px Open Sans bold`;
     ctx.fillStyle = '#ffc709';
     ctx.textAlign = 'center';
-    ctx.fillText('Get ready for level 1', spacewar.width / 2, 100);
+    ctx.fillText(`Get ready for level ${this.level}`, spacewar.width / 2, 100);
   }
 }

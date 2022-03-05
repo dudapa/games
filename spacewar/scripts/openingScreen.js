@@ -5,7 +5,6 @@ class OpeningScreen {
     ctx.fillStyle = '#ffc709';
     ctx.textAlign = 'center';
     ctx.fillText('SPACE WAR', spacewar.width / 2, 100);
-
     ctx.font = '30px Open Sans';
     ctx.fillStyle = '#ffc709';
     ctx.fillText(
