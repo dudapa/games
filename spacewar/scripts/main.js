@@ -24,10 +24,12 @@ class Spacewar {
     this.settings = { 
       fps60: (1000 / 60),
       bulletFrequency: 500,
+      enemyFireFrequency: 50,
     };
 
     this.areaOfMove = {
-      vertical: 100,
+      verticalTop: 100,
+      verticalButtom: 50,
       horizontal: 50,
     }
     

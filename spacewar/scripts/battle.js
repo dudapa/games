@@ -11,8 +11,9 @@ class Battle {
     this.verticalMovingEnemies = 0;
     this.deep = 2000;
     this.currentDeep = 0;
-    this.asteroids = [];
+    this.meteors = [];
     this.bullets = [];
+    this.enemyBullets = [];
     this.lastBulletTime = null;
   }
 
@@ -44,7 +45,7 @@ class Battle {
 
     // Check if the player is shooting
     if (spacewar.pressedKeys[' ']) {
-      this.shoot();
+      this.shootPlayer();
     }
 
     // Move bullets
@@ -77,6 +78,7 @@ class Battle {
       }
     }
 
+    // Move enemies down
     if (this.enemiesGoingDown) {
       for (let i = 0; i < this.enemies.length; i++) {
         let enemy = this.enemies[i];
@@ -89,6 +91,157 @@ class Battle {
           this.currentDeep = 0;
         }
       }
+    }
+
+    // Check collision of bullets with ufos
+    for (let i = 0; i < this.enemies.length; i++) {
+      let enemy = this.enemies[i];
+      for (let j = 0; j < this.bullets.length; j++) {
+        let bullet = this.bullets[j];
+        if (
+          (bullet.x > enemy.x || bullet.x + bullet.width > enemy.x) &&
+          bullet.x < enemy.x + enemy.enemySize &&
+          bullet.y < enemy.y + enemy.enemySize &&
+          bullet.y > enemy.y
+        ) {
+          this.enemies.splice(i, 1);
+          this.bullets.splice(j, 1);
+        }
+      }
+    }
+
+    // Enemies firing
+    const chanceForFire = 0.9993;
+    for (let i = 0; i < this.enemies.length; i++) {
+      let enemy = this.enemies[i];
+      let enemyChanceToFire = Math.random();
+      if (enemyChanceToFire > chanceForFire) {
+        let enemyBullet = new EnemyBullet(
+          enemy.x + enemy.enemySize / 2,
+          enemy.y + enemy.enemySize
+        );
+        this.enemyBullets.push(enemyBullet);
+      }
+    }
+
+    // Move enemies bullets
+    for (let i = 0; i < this.enemyBullets.length; i++) {
+      const enemyBullet = this.enemyBullets[i];
+      enemyBullet.y += enemyBullet.speed;
+      if (enemyBullet.y > spacewar.height) {
+        this.enemyBullets.splice(i, 1);
+      }
+    }
+
+    // Check collision of the spaceship with a enemy's bullet
+    for (let i = 0; i < this.enemyBullets.length; i++) {
+      let enemyBullet = this.enemyBullets[i];
+      if (
+        enemyBullet.x > this.spaceShip.x &&
+        enemyBullet.x < this.spaceShip.x + this.spaceShip.shipSize &&
+        enemyBullet.y > this.spaceShip.y &&
+        enemyBullet.y < this.spaceShip.y + this.spaceShip.shipSize
+      ) {
+        console.log('Shields go down');
+        this.spaceShip.shields -= 1;
+        this.enemyBullets.splice(i, 1);
+      }
+    }
+
+    // Create meteors
+    const chanceMeteorToAppear = 0.991;
+    let chanceToAppear = Math.random();
+    if (chanceToAppear > chanceMeteorToAppear) {
+      let max = spacewar.width - 3 * this.areaOfMove.horizontal;
+      let min = this.areaOfMove.horizontal;
+      let meteorX = Math.floor(Math.random() * (max - min) + min);
+      let bigOrSmall = Math.floor(Math.random() * 2);
+
+      if (bigOrSmall) {
+        this.meteors.push(new BigMeteor(meteorX, 0));
+      } else {
+        this.meteors.push(new SmallMeteor(meteorX, 0));
+      }
+
+    }
+
+    // Move meteors
+    for (let i = 0; i < this.meteors.length; i++) {
+      let meteor = this.meteors[i];
+      meteor.y += meteor.speed;
+      if (meteor.y > spacewar.height) {
+        this.meteors.splice(i, 1);
+      }
+    }
+
+    // Check collision between the spaceship and a meteor
+    let speceshipLeft = this.spaceShip.x;
+    let spaceShipRight = this.spaceShip.x + this.spaceShip.shipSize;
+    let spaceShipTop = this.spaceShip.y;
+
+    for (let i = 0; i < this.meteors.length; i++) {
+      let meteor = this.meteors[i];
+
+      let meteorLeft = meteor.x;
+      let meteorRight = meteor.x + meteor.meteorSize;
+      let meteorBottom = meteor.y + meteor.meteorSize;
+
+      if (
+        (meteorLeft > speceshipLeft || meteorRight > speceshipLeft) &&
+        (meteorLeft < spaceShipRight || meteorRight < spaceShipRight) &&
+        meteorBottom > spaceShipTop
+      ) {
+        if (meteor.notation === 'big') {
+          this.spaceShip.shields -= 3;
+          this.meteors.splice(i, 1);
+        } else {
+          this.spaceShip.shields -= 1;
+          this.meteors.splice(i, 1);
+        }
+      }
+    }
+
+    // Check collision between meteor and play's bullet
+    for (let i = 0; i < this.meteors.length; i++) {
+      let meteor = this.meteors[i];
+      for (let j = 0; j < this.bullets.length; j++) {
+        let bullet = this.bullets[j];
+        if (
+          (bullet.x > meteor.x || bullet.x + bullet.width > meteor.x) &&
+          bullet.x < meteor.x + meteor.meteorSize &&
+          bullet.y < meteor.y + meteor.meteorSize &&
+          bullet.y > meteor.y
+        ) {
+          meteor.lives -= 1;
+          this.bullets.splice(j, 1);
+        }
+      }
+      if (meteor.lives === 0) {
+        this.meteors.splice(i, 1);
+      }
+
+    }
+
+    // GAMEOVER
+    for (let i = 0; i < this.enemies.length; i++) {
+      let enemy = this.enemies[i];
+      // Check there is collision of the spaceship with a enemy
+      if (
+        enemy.x > this.spaceShip.x &&
+        enemy.x < this.spaceShip.x + this.spaceShip.shipSize &&
+        enemy.y + enemy.enemySize > this.spaceShip.y
+      ) {
+        console.log('game over');
+      }
+      // Check if the speceship was destroyed
+      if (this.spaceShip.shields < 0) {
+        console.log('game over');
+      }
+    }
+
+    // VICTORY (all enemies are destroyed)
+    if (this.enemies.length === 0) {
+      console.log('Victory!!');
     }
   }
 
@@ -108,10 +261,20 @@ class Battle {
     for (let enemy of this.enemies) {
       enemy.draw();
     }
+
+    // Draw enemies bullets
+    for (let enemyBullet of this.enemyBullets) {
+      enemyBullet.draw();
+    }
+
+    // Draw meteors
+    for (let meteor of this.meteors) {
+      meteor.draw();
+    }
   }
 
   // Shoot bullets
-  shoot() {
+  shootPlayer() {
     if (
       this.lastBulletTime === null ||
       new Date().getTime() - this.lastBulletTime > this.settings.bulletFrequency
