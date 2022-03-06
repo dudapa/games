@@ -115,7 +115,7 @@ class Battle {
     }
 
     // Enemies firing
-    const chanceForFire = 0.9993;
+    const chanceForFire = 0.9997 - this.level * 0.0002;
     for (let i = 0; i < this.enemies.length; i++) {
       let enemy = this.enemies[i];
       let enemyChanceToFire = Math.random();
@@ -139,13 +139,22 @@ class Battle {
     }
 
     // Check collision of the spaceship with a enemy's bullet
+    let speceshipLeft = this.spaceShip.x;
+    let spaceShipRight = this.spaceShip.x + this.spaceShip.shipSize;
+    let spaceShipTop = this.spaceShip.y;
+    let spaceShipBottom = this.spaceShip.y + this.spaceShip.shipSize;
     for (let i = 0; i < this.enemyBullets.length; i++) {
       let enemyBullet = this.enemyBullets[i];
+      let bulletLeft = enemyBullet.x;
+      let bulletRight = enemyBullet.x + enemyBullet.width;
+      let bulletTop = enemyBullet.y;
+      let bulletBottom = enemyBullet.y + enemyBullet.height;
+
       if (
-        enemyBullet.x > this.spaceShip.x &&
-        enemyBullet.x < this.spaceShip.x + this.spaceShip.shipSize &&
-        enemyBullet.y > this.spaceShip.y &&
-        enemyBullet.y < this.spaceShip.y + this.spaceShip.shipSize
+        (bulletLeft > speceshipLeft || bulletRight > speceshipLeft) &&
+        (bulletLeft < spaceShipRight || bulletRight < spaceShipRight) &&
+        enemyBullet.y > spaceShipTop &&
+        enemyBullet.y < spaceShipBottom
       ) {
         console.log('Shields go down');
         spacewar.sounds.playSound('shieldDown');
@@ -155,7 +164,7 @@ class Battle {
     }
 
     // Create meteors
-    const chanceMeteorToAppear = 0.9999; //0.991
+    const chanceMeteorToAppear = 0.998 - this.level * 0.001 ; 
     let chanceToAppear = Math.random();
     if (chanceToAppear > chanceMeteorToAppear) {
       let max = spacewar.width - 3 * this.areaOfMove.horizontal;
@@ -180,11 +189,6 @@ class Battle {
     }
 
     // Check collision between the spaceship and a meteor
-    let speceshipLeft = this.spaceShip.x;
-    let spaceShipRight = this.spaceShip.x + this.spaceShip.shipSize;
-    let spaceShipTop = this.spaceShip.y;
-    let spaceShipBottom = this.spaceShip.y + this.spaceShip.shipSize;
-
     for (let i = 0; i < this.meteors.length; i++) {
       let meteor = this.meteors[i];
 
@@ -244,13 +248,13 @@ class Battle {
       if (
         enemy.x > this.spaceShip.x &&
         enemy.x < this.spaceShip.x + this.spaceShip.shipSize &&
-        enemy.y + enemy.enemySize > this.spaceShip.y 
+        enemy.y + enemy.enemySize > this.spaceShip.y
       ) {
         spacewar.sounds.stopSounds('easy');
         spacewar.sounds.stopSounds('medium');
         spacewar.sounds.stopSounds('hard');
         spacewar.sounds.playSound('playerDeath');
-        spacewar.goToPosition(new OpeningScreen());
+        spacewar.goToPosition(new Lose());
       }
       // Check if the speceship was destroyed
       if (this.spaceShip.shields < 0) {
@@ -258,14 +262,20 @@ class Battle {
         spacewar.sounds.stopSounds('medium');
         spacewar.sounds.stopSounds('hard');
         spacewar.sounds.playSound('playerDeath');
-        spacewar.goToPosition(new OpeningScreen());
+        spacewar.goToPosition(new Lose());
       }
     }
 
     // VICTORY (all enemies are destroyed)
     if (this.enemies.length === 0) {
-      spacewar.level += 1;
-      spacewar.goToPosition(new ShowLevel(spacewar));
+      if (spacewar.level === 6) {
+        spacewar.sounds.stopSounds('hard');
+        spacewar.sounds.playSound('win');
+        spacewar.goToPosition(new Win());
+      } else {
+        spacewar.level += 1;
+        spacewar.goToPosition(new ShowLevel(spacewar));
+      }
     }
   }
 
@@ -334,6 +344,7 @@ class ShowLevel {
     this.sizeFont += 0.7;
     if (this.sizeFont > 90) {
       if (this.level <= 2) {
+        spacewar.sounds.stopSounds('win');
         spacewar.sounds.playSound('easy');
       }
       if (this.level > 2 && this.level <= 4) {

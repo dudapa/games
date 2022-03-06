@@ -1,4 +1,6 @@
 class OpeningScreen {
+  constructor () {}
+  
   draw(spacewar) {
     ctx.clearRect(0, 0, spacewar.width, spacewar.height);
     ctx.font = '80px Open Sans bold';

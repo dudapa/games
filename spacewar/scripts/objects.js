@@ -75,8 +75,8 @@ class PlayerBullet {
 
 class EnemyBullet {
   constructor(x, y, level) {
-    this.width = 15;
     this.level = level;
+    this.width = 15;
     this.height = this.level <= 4 ? 30 : 60;
     this.x = x;
     this.y = y;

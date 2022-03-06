@@ -7,7 +7,7 @@ class Sounds {
       '../sounds/explosion_enemy.flac',
       '../sounds/sfx_shieldDown.ogg',
       '../sounds/player_death.wav',
-      '../sounds/intro.ogg',
+      '../sounds/win.ogg',
       '../sounds/easy.ogg',
       '../sounds/medium.mp3',
       '../sounds/hard.ogg',
@@ -41,7 +41,7 @@ class Sounds {
       case 'playerDeath':
         soundNumber = 4;
         break;
-      case 'intro':
+      case 'win':
         soundNumber = 5;
         break;
       case 'easy':
@@ -63,7 +63,7 @@ class Sounds {
   stopSounds(soundName){
       let soundNumber;
       switch (soundName) {
-        case 'intro':
+        case 'win':
           soundNumber = 5;
           break;
         case 'easy':
