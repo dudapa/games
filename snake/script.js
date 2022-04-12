@@ -51,6 +51,17 @@ let foodPositionX = randomPosition();
 let foodPositionY = randomPosition();
 let foodColor = randomColor();
 
+// Sounds
+collectStar = new Audio();
+collectStar.src = 'sounds/collection.mp3';
+collectStar.setAttribute('preload', 'auto');
+drum = new Audio();
+drum.src = 'sounds/drum.mp3';
+drum.setAttribute('preload', 'auto');
+hihi = new Audio();
+hihi.src = 'sounds/hihi.mp3';
+hihi.setAttribute('preload', 'auto');
+
 // Draw initial positons
 drawGrid(radius, width, height);
 drawSnakePosition(snakePositionX, snakePositionY);
@@ -194,6 +205,7 @@ function makeFood(x, y, color) {
 // Check if the food is eaten, if so then make a new food
 function eatFood() {
   if (snakePositionX === foodPositionX && snakePositionY === foodPositionY) {
+    collectionOfStarSound();
     addToTail(foodPositionX, foodPositionY, foodColor); // Add a eaten food to the tail
     foodPositionX = randomPosition(); // Give a new x position
     foodPositionY = randomPosition(); // Give a new y position
@@ -253,6 +265,7 @@ function addLastPositionToTail(lastPosition) {
 function checkCollision() {
   tail.forEach(function (ele) {
     if (snakePositionX === ele.x && snakePositionY === ele.y) {
+      gameOverSound();
       isGameRunning = false;
       gameOver.classList.add('dead');
       playAgain.classList.add('dead');
@@ -291,6 +304,18 @@ function updateTop3(){
       third.textContent = `${top3[i]} `;
     }
   }
+}
+
+// SOUNDS
+function collectionOfStarSound() {
+   collectStar.pause();
+   collectStar.currentTime = 0;
+   collectStar.play();
+}
+
+function gameOverSound() {
+   drum.play();
+   hihi.play();
 }
 
 // RANDOM VALUES
