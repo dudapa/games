@@ -14,6 +14,9 @@ const settingsBtn = document.querySelector('.btn-settings');
 const settingsBtnClose = document.querySelector('.btn-close-settings');
 const settings = document.querySelector('.settings');
 
+// Souds
+const
+
 // Colors
 const body = document.querySelector('body');
 const color1 = document.querySelector('.color1');

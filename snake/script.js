@@ -52,13 +52,13 @@ let foodPositionY = randomPosition();
 let foodColor = randomColor();
 
 // Sounds
-collectStar = new Audio();
+const collectStar = new Audio();
 collectStar.src = 'sounds/collection.mp3';
 collectStar.setAttribute('preload', 'auto');
-drum = new Audio();
+const drum = new Audio();
 drum.src = 'sounds/drum.mp3';
 drum.setAttribute('preload', 'auto');
-hihi = new Audio();
+const hihi = new Audio();
 hihi.src = 'sounds/hihi.mp3';
 hihi.setAttribute('preload', 'auto');
 
