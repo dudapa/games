@@ -15,7 +15,22 @@ const settingsBtnClose = document.querySelector('.btn-close-settings');
 const settings = document.querySelector('.settings');
 
 // Souds
-const
+const reflection = new Audio();
+reflection.src = 'sounds/reflection.mp3';
+reflection.setAttribute('preload', 'auto');
+
+const breakBrick = new Audio();
+breakBrick.src = 'sounds/breakBrick.mp3';
+breakBrick.volume = 0.2;
+breakBrick.setAttribute('preload', 'auto');
+
+const soundGameOver = new Audio();
+soundGameOver.src = 'sounds/gameOver.mp3';
+soundGameOver.setAttribute('preload', 'auto');
+
+const soundGameWin = new Audio();
+soundGameWin.src = 'sounds/winGame.mp3';
+soundGameOver.setAttribute('preload', 'auto');
 
 // Colors
 const body = document.querySelector('body');
@@ -194,15 +209,19 @@ function moveBall() {
 // Walls collision
 function wallCollision() {
   if (ball.y - ball.size < 0) {
+    makeReflectionSound();
     ball.dy *= -1;
   }
-  if (ball.y + ball.size > height) {
-    ball.dy *= -1;
-  }
+  // if (ball.y + ball.size > height) {
+  //   makeReflectionSound();
+  //   ball.dy *= -1;
+  // }
   if (ball.x - ball.size < 0) {
+    makeReflectionSound();
     ball.dx *= -1;
   }
   if (ball.x + ball.size > width) {
+    makeReflectionSound();
     ball.dx *= -1;
   }
 }
@@ -214,6 +233,7 @@ function checkPaddleReflect() {
     ball.x - ball.size < paddle.x + paddle.width &&
     ball.y + ball.size > paddle.y
   ) {
+    makeReflectionSound();
     ball.dy *= -1;
   }
 }
@@ -221,6 +241,7 @@ function checkPaddleReflect() {
 // Game over
 function bottomCheck() {
   if (ball.y + ball.size > height) {
+    makeSoundGameOver();
     isGameRunning = false;
     isGameStop = true;
     gameOver.classList.add('dead');
@@ -232,6 +253,7 @@ function bottomCheck() {
 // Check if the player won
 function checkWin() {
   if (breakBricksCount === brickColumn * brickRow) {
+    makeSoundGameWin();
     isGameRunning = false;
     isGameStop = true;
     gameWin.classList.add('win');
@@ -309,6 +331,7 @@ function brickDestroyed() {
         brick.y + brick.height > ball.y - ball.size &&
         brick.y < ball.y + ball.size
       ) {
+        makeSoundBrickBreakBrick();
         ball.dy *= -1;
         brick.visible = false;
         breakBricksCount++;
@@ -472,6 +495,30 @@ function startGame() {
   }
 }
 
+// Sounds function
+function makeReflectionSound() {
+  reflection.pause();
+  reflection.currentTime = 0;
+  reflection.play();
+}
+
+function makeSoundBrickBreakBrick() {
+  breakBrick.pause()
+  breakBrick.currentTime = 0;
+  breakBrick.play();
+}
+
+function makeSoundGameOver() {
+  soundGameOver.pause();
+  soundGameOver.currentTime = 0;
+  soundGameOver.play();
+}
+
+function makeSoundGameWin() {
+  soundGameWin.pause();
+  soundGameWin.currentTime = 0;
+  soundGameWin.play();
+}
 // LISTENERS
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
