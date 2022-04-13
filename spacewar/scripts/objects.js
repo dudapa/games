@@ -1,10 +1,13 @@
+// Ratio of sizes of game objects based on size of screen
+const ratioByScreenX = window.innerWidth > 1900 ? 1 : 0.8;
+const ratioByScreenY = window.innerHeight > 900 ? 1 : 0.77;
 class SpaceShip {
   constructor() {
-    this.shipSize = 60;
-    this.x = canvas.width / 2 - 30;
-    this.y = canvas.height - 100;
+    this.shipSize = 60 * ratioByScreenX;
+    this.x = canvas.width / 2 - 30 * ratioByScreenX;
+    this.y = canvas.height - 100 * ratioByScreenY;
     this.src = '../images/playerShip.png';
-    this.speed = 7;
+    this.speed = 7 * ratioByScreenX;
     this.shields = 2;
   }
 
@@ -17,12 +20,12 @@ class SpaceShip {
 
 class Enemy {
   constructor(x, y, level) {
-    this.enemySize = 40;
+    this.enemySize = 40 * ratioByScreenX; // 4ratioByScreen0
     this.x = x;
     this.y = y;
     this.level = level;
     this.src = `../images/enemy${this.level}.png`;
-    this.speed = 1.5;
+    this.speed = 1.5 * ratioByScreenX;
   }
 
   draw() {
@@ -41,16 +44,16 @@ class Army {
     const rowCount = 4;
     const columnCount = 8;
     const army = [];
-    let x = 100;
-    let y = 100;
+    let x = 100 * ratioByScreenX;
+    let y = 100 * ratioByScreenY;
     for (let row = 0; row < rowCount; row++) {
       for (let column = 0; column < columnCount; column++) {
         const enemy = new Enemy(x, y, this.level);
         army.push(enemy);
-        x += 70;
+        x += 70 * ratioByScreenX;
       }
-      x = 100;
-      y += 50;
+      x = 100 * ratioByScreenX;
+      y += 50 * ratioByScreenY;
     }
     return army;
   }
@@ -58,12 +61,12 @@ class Army {
 
 class PlayerBullet {
   constructor(x, y) {
-    this.width = 15;
-    this.height = 30;
+    this.width = 15 * ratioByScreenX;
+    this.height = 30 * ratioByScreenY;
     this.x = x;
     this.y = y;
     this.src = '../images/fire1.png';
-    this.speed = 10;
+    this.speed = 10 * ratioByScreenY;
   }
 
   draw() {
@@ -76,12 +79,12 @@ class PlayerBullet {
 class EnemyBullet {
   constructor(x, y, level) {
     this.level = level;
-    this.width = 15;
-    this.height = this.level <= 4 ? 30 : 60;
+    this.width = 15 * ratioByScreenX;
+    this.height = this.level <= 4 ? 30 * ratioByScreenY : 60 * ratioByScreenY;
     this.x = x;
     this.y = y;
     this.src = this.level <= 4 ? '../images/fire2.png' : '../images/fire3.png';
-    this.speed = 10;
+    this.speed = 10 * ratioByScreenY;
   }
 
   draw() {
@@ -93,11 +96,11 @@ class EnemyBullet {
 
 class BigMeteor {
   constructor(x, y) {
-    this.meteorSize = 100;
+    this.meteorSize = 100 * ratioByScreenX;
     this.x = x;
     this.y = y;
     this.src = '../images/meteorBrown_big1.png';
-    this.speed = 3;
+    this.speed = 3 * ratioByScreenY;
     this.lives = 3;
     this.notation = 'big';
   }
@@ -111,11 +114,11 @@ class BigMeteor {
 
 class SmallMeteor {
   constructor(x, y) {
-    this.meteorSize = 50;
+    this.meteorSize = 50 * ratioByScreenX;
     this.x = x;
     this.y = y;
     this.src = '../images/meteorBrown_med1.png';
-    this.speed = 3;
+    this.speed = 3 * ratioByScreenY;
     this.lives = 1;
     this.notation = 'small';
   }
