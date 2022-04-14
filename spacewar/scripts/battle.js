@@ -44,9 +44,8 @@ class Battle {
       spaceShip.x = rightRestriction;
     }
 
-    // Check if the player is shooting
+    // Check if the player is shooting (If press shift)
     if (spacewar.pressedKeys[' ']) {
-      spacewar.sounds.playSound('shot');
       this.shootPlayer();
     }
 
@@ -325,6 +324,7 @@ class Battle {
       this.lastBulletTime === null ||
       new Date().getTime() - this.lastBulletTime > this.settings.bulletFrequency
     ) {
+      spacewar.sounds.playSound('shot');
       const x = this.spaceShip.x + this.spaceShip.shipSize / 2 - 7;
       const y = this.spaceShip.y - this.spaceShip.shipSize / 2;
       this.bullets.push(new PlayerBullet(x, y));
