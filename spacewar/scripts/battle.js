@@ -10,7 +10,7 @@ class Battle {
     this.enemiesGoingDown = false;
     this.horizontalMovingEnemies = 1;
     this.verticalMovingEnemies = 0;
-    this.deep = 2000;
+    this.deep = 2000 * ratioByScreenY;
     this.currentDeep = 0;
     this.meteors = [];
     this.bullets = [];
