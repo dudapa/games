@@ -44,7 +44,7 @@ class Battle {
       spaceShip.x = rightRestriction;
     }
 
-    // Check if the player is shooting (If press shift)
+    // Check if the player is shooting (If press space)
     if (spacewar.pressedKeys[' ']) {
       this.shootPlayer();
     }
