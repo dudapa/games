@@ -342,7 +342,7 @@ class ShowLevel {
 
   draw(spacewar) {
     this.sizeFont += 0.7;
-    if (this.sizeFont > 90) {
+    if (this.sizeFont > 70) {
       if (this.level <= 2) {
         spacewar.sounds.stopSounds('win');
         spacewar.sounds.playSound('easy');
