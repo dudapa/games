@@ -99,7 +99,7 @@ const ball = {
   dx: 1,
   dy: -1,
   size: 10,
-  speed: 3,
+  speed: 6,
 };
 
 // Paddle object
@@ -155,7 +155,7 @@ function gameLoop() {
 // Draw all initial positions of stuff
 drawStuff();
 
-// ⇊ UNCOMMENT TO PLAY ⇊
+// Game loop
 gameLoop();
 
 // Canvas
@@ -279,7 +279,7 @@ function keyDown(e) {
     paddle.dx = -paddle.speed;
   }
   if (e.key === 'ArrowRight') {
-    paddle.dx += paddle.speed;
+    paddle.dx = paddle.speed;
   }
 }
 
