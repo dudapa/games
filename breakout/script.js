@@ -58,7 +58,7 @@ const colors = [
 // Save color in localStorage
 setLocalStorageColor();
 let localStorageColor = getLocalStorageColor();
-// body.style = `background:${localStorageColor}`;
+
 
 // Game Over
 const gameOver = document.querySelector('.game-over');
@@ -410,11 +410,13 @@ function stopInterval() {
 
 // COLOR
 // Change color
-function colorSelected(color) {
+function colorSelected(e) {
+  const selectedColor = e.target
   colors.forEach((color) => {
     color[0].classList.remove('selected');
   });
-  color.path[0].classList.add('selected');
+
+  selectedColor.classList.add('selected');
 
   colors.forEach((color) => {
     if (color[0].classList.contains('selected')) {
@@ -519,6 +521,7 @@ function makeSoundGameWin() {
   soundGameWin.currentTime = 0;
   soundGameWin.play();
 }
+
 // LISTENERS
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
