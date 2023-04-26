@@ -18,6 +18,7 @@ class Sounds {
   init() {
     for (let i = 0; i < this.soundsSource.length; i++) {
       this.allSounds[i] = new Audio();
+      this.allSounds[i].volume = 0.1;
       this.allSounds[i].src = this.soundsSource[i];
       this.allSounds[i].setAttribute('preload', 'auto');
     }
