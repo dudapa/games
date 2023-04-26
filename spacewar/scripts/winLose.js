@@ -36,7 +36,7 @@ class Lose {
     ctx.textAlign = 'center';
     ctx.fillText('You lost the war!!!!!', spacewar.width / 2, 100);
     ctx.font = '30px Open Sans';
-    ctx.fillStyle = '#ffc709';
+    ctx.fillStyle = '#ffc709';    
     ctx.fillText(
       "Press 'Space' to continue.",
       spacewar.width / 2,

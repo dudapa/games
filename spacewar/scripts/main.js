@@ -47,9 +47,10 @@ class Spacewar {
       this.stateOfGame.length = 0;
     }
 
-    if (position.entry) {
-      position.entry(spacewar);
-    }
+    // if (position.entry) {
+    //   console.log(position.entry)
+    //   position.entry(spacewar);
+    // }
     // Set the current game posittion to the stateOfGame
     this.stateOfGame.push(position);
   }
@@ -70,7 +71,7 @@ class Spacewar {
     setInterval(function() {
       gameLoop(spacewar)
     }, this.settings.fps60)
-    this.goToPosition(new OpeningScreen());
+    this.goToPosition(new OpeningScreen(this));
   }
 }
 
@@ -102,8 +103,8 @@ function resizeScreen(canvas) {
 
 window.addEventListener('keydown', function (e) {
   if (e.key === ' ' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-    e.preventDefault()
-    spacewar.keyDown(e.key)
+    e.preventDefault();
+    spacewar.keyDown(e.key);
   }
 });
 

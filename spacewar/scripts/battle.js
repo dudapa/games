@@ -10,7 +10,7 @@ class Battle {
     this.enemiesGoingDown = false;
     this.horizontalMovingEnemies = 1;
     this.verticalMovingEnemies = 0;
-    this.deep = 2000 * ratioByScreenY;
+    this.deep = 130 * ratioByScreenY;
     this.currentDeep = 0;
     this.meteors = [];
     this.bullets = [];
@@ -60,37 +60,42 @@ class Battle {
 
     // Move enemy's army
     let enemyReachSide = false;
-    for (let i = 0; i < this.enemies.length; i++) {
-      let enemy = this.enemies[i];
-      let newPosition =
-        enemy.x +
-        enemy.speed * this.directionOfEnemies * this.horizontalMovingEnemies;
 
-      if (newPosition < leftRestriction || newPosition > rightRestriction) {
-        this.directionOfEnemies *= -1;
-        enemyReachSide = true;
-        this.horizontalMovingEnemies = 0;
-        this.verticalMovingEnemies = 1;
-        this.enemiesGoingDown = true;
+
+      for (let i = 0; i < this.enemies.length; i++) {
+        let enemy = this.enemies[i];
+        let newPosition =
+          enemy.x +
+          enemy.speed * this.directionOfEnemies * this.horizontalMovingEnemies;
+
+        if (newPosition < leftRestriction || newPosition > rightRestriction) {
+          this.directionOfEnemies *= -1;
+          enemyReachSide = true;
+          this.horizontalMovingEnemies = 0;
+          this.verticalMovingEnemies = 1;
+          this.enemiesGoingDown = true;
+        }
+
+        if (!enemyReachSide) {
+          enemy.x = newPosition;
+        }
       }
 
-      if (!enemyReachSide) {
-        enemy.x = newPosition;
-      }
-    }
 
     // Move enemies down
     if (this.enemiesGoingDown) {
+      const enemySpeed = this.enemies[0].speed
       for (let i = 0; i < this.enemies.length; i++) {
         let enemy = this.enemies[i];
         enemy.y += enemy.speed;
-        this.currentDeep += enemy.speed * this.verticalMovingEnemies;
-        if (this.currentDeep > this.deep) {
-          this.horizontalMovingEnemies = 1;
-          this.verticalMovingEnemies = 0;
-          this.enemiesGoingDown = false;
-          this.currentDeep = 0;
-        }
+      }
+      this.currentDeep += enemySpeed * this.verticalMovingEnemies;
+      console.log(this.currentDeep, this.deep);
+      if (this.currentDeep >= this.deep) {
+        this.horizontalMovingEnemies = 1;
+        this.verticalMovingEnemies = 0;
+        this.enemiesGoingDown = false;
+        this.currentDeep = 0;
       }
     }
 

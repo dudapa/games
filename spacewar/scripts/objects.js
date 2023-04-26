@@ -1,6 +1,7 @@
 // Ratio of sizes of game objects based on size of screen
 const ratioByScreenX = window.innerWidth > 1900 ? 1 : 0.8;
 const ratioByScreenY = window.innerHeight > 900 ? 1 : 0.77;
+
 class SpaceShip {
   constructor() {
     this.shipSize = 60 * ratioByScreenX;
@@ -20,7 +21,7 @@ class SpaceShip {
 
 class Enemy {
   constructor(x, y, level) {
-    this.enemySize = 40 * ratioByScreenX; // 4ratioByScreen0
+    this.enemySize = 40 * ratioByScreenX; 
     this.x = x;
     this.y = y;
     this.level = level;
